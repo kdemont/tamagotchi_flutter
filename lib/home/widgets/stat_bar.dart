@@ -106,7 +106,7 @@ class StatBar extends StatelessWidget {
               ],
             ),
           ),
-
+/*
           const SizedBox(width: 8),
           // numeric value box (slightly smaller)
           Container(
@@ -122,6 +122,7 @@ class StatBar extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
             ),
           ),
+          */
         ],
       ),
     );

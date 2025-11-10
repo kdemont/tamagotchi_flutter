@@ -5,16 +5,39 @@ import 'package:lottie/lottie.dart';
 import '../bloc/home_bloc.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/stat_bar.dart';
+import '../../game/view/game_page.dart';
+import '../../achievements/view/achievements_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 1; // 0: Play, 1: Chambre (home), 2: Succès
+
+  void _onNavTap(int index) {
+    if (index == _selectedIndex) return;
+    setState(() => _selectedIndex = index);
+    if (index == 0) {
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const GamePage()));
+    } else if (index == 2) {
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const AchievementsPage()));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final viewModel = HomeViewModel(context.read<HomeBloc>());
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Tamagotchi')),
+      //appBar: AppBar(title: const Text('Tamagotchi')),
       body: Stack(
         children: [
           // Background image that covers the whole screen
@@ -40,12 +63,6 @@ class HomePage extends StatelessWidget {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Name: ${t.name}',
-                              style: Theme.of(context).textTheme.titleLarge
-                                  ?.copyWith(color: Colors.white),
-                            ),
-                            const SizedBox(height: 8),
                             // Stats in a 2-column grid (two per row)
                             GridView.count(
                               crossAxisCount: 2,
@@ -79,9 +96,21 @@ class HomePage extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 12),
-                            Text(
-                              'Age: ${t.age}',
-                              style: const TextStyle(color: Colors.white),
+                            Row(
+                              children: [
+                                Text(
+                                  t.name,
+                                  style: Theme.of(context).textTheme.titleLarge
+                                      ?.copyWith(color: Color(0xFF9B7C47)),
+                                ),
+                                const SizedBox(width: 16),
+                                Text(
+                                  'Age: ${t.age}',
+                                  style: const TextStyle(
+                                    color: Color(0xFF654B1F),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         );
@@ -104,39 +133,58 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
 
-                  // Action buttons at the bottom
+                  // Action buttons at the bottom: round icon buttons for Feed and Sleep
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(
                         onPressed: viewModel.feed,
-                        child: const Text('Feed'),
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(14),
+                          backgroundColor: Colors.orangeAccent,
+                          minimumSize: const Size(56, 56),
+                        ),
+                        child: const Icon(
+                          Icons.restaurant_menu,
+                          color: Colors.white,
+                        ),
                       ),
                       ElevatedButton(
-                        onPressed: viewModel.play,
-                        child: const Text('Play'),
-                      ),
-                      ElevatedButton(
-                        onPressed: viewModel.sleep,
-                        child: const Text('Sleep'),
+                        onPressed: viewModel.clean,
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(14),
+                          backgroundColor: Colors.deepPurpleAccent,
+                          minimumSize: const Size(56, 56),
+                        ),
+                        child: const Icon(Icons.cleaning_services, color: Colors.white),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: viewModel.clean,
-                    child: const Text('Clean'),
-                  ),
-                  const SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: viewModel.refresh,
-                    child: const Text('Refresh'),
                   ),
                 ],
               ),
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onNavTap,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.sports_esports),
+            label: 'JEU',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'CHAMBRE'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.emoji_events),
+            label: 'SUCCÈS',
+          ),
+        ],
+        selectedItemColor: const Color(0xFF654B1F),
+        unselectedItemColor: Colors.brown.shade300,
+        backgroundColor: const Color(0xFF4A3114),
       ),
     );
   }
