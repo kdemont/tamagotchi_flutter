@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import '../bloc/home_bloc.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/stat_bar.dart';
+import '../../shared/widgets/bottom_nav_bar.dart';
 import '../../game/view/game_page.dart';
 import '../../achievements/view/achievements_page.dart';
 
@@ -158,7 +159,10 @@ class _HomePageState extends State<HomePage> {
                           backgroundColor: Colors.deepPurpleAccent,
                           minimumSize: const Size(56, 56),
                         ),
-                        child: const Icon(Icons.cleaning_services, color: Colors.white),
+                        child: const Icon(
+                          Icons.cleaning_services,
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
@@ -168,23 +172,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,
-        onTap: _onNavTap,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sports_esports),
-            label: 'JEU',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'CHAMBRE'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events),
-            label: 'SUCCÈS',
-          ),
-        ],
-        selectedItemColor: const Color(0xFF654B1F),
-        unselectedItemColor: Colors.brown.shade300,
-        backgroundColor: const Color(0xFF4A3114),
+        onTap: (index) {
+          _onNavTap(index);
+        },
       ),
     );
   }

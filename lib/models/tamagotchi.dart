@@ -41,4 +41,24 @@ class Tamagotchi {
     cleanliness: 100,
     age: 0,
   );
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'hunger': hunger,
+      'energy': energy,
+      'happiness': happiness,
+      'cleanliness': cleanliness,
+      'age': age,
+    };
+  }
+
+  factory Tamagotchi.fromJson(Map<String, dynamic> json) => Tamagotchi(
+    name: json['name'] as String? ?? 'Tama',
+    hunger: (json['hunger'] as num?)?.toInt() ?? 100,
+    energy: (json['energy'] as num?)?.toInt() ?? 100,
+    happiness: (json['happiness'] as num?)?.toInt() ?? 100,
+    cleanliness: (json['cleanliness'] as num?)?.toInt() ?? 100,
+    age: (json['age'] as num?)?.toInt() ?? 0,
+  );
 }
