@@ -5,8 +5,7 @@ class StatBar extends StatelessWidget {
   final int value; // 0..100
   final IconData? icon;
 
-  const StatBar({Key? key, required this.label, required this.value, this.icon})
-    : super(key: key);
+  const StatBar({super.key, required this.label, required this.value, this.icon});
 
   @override
   Widget build(BuildContext context) {
