@@ -25,12 +25,14 @@ Nous avons utilisé comme paramètres :
 - JPG quality : 1
 - Frame count : `maxFrameCountGuess` 
 
-## Optimisation des fichiers Lottie
-
-Pour réduire la taille des fichiers Lottie, nous avons ensuit utilisé l'outil [Tiny Lottie](https://www.tinylottie.studio/). Cet outil nous a permis de compresser les fichiers JSON tout en conservant une bonne qualité visuelle. 
-
 ## Suppression du fond blanc et watermark
 
 Pour retirer le fond blanc et le watermark, nous avons utilisé un script Python. Le script `remove_bg_and_watermark.py` lit chaque fichier Lottie, supprime les éléments indésirables, et sauvegarde le fichier nettoyé.
 
 Pour retravailler certaines frames où le script n'a pas parfaitement fonctionné, il est possible d'extraire les frames en PNG, de les éditer manuellement (par exemple avec [PhotoFiltre7](https://www.photofiltre-studio.com/pf7.htm)), puis de les réintégrer dans le fichier Lottie à l'aide des scripts `extract.py` et `inject.py`.
+
+## Optimisation des fichiers Lottie
+
+Pour réduire la taille des fichiers Lottie, nous avons ensuit utilisé l'outil [Tiny Lottie](https://www.tinylottie.studio/). Cet outil nous a permis de compresser les fichiers JSON tout en conservant une bonne qualité visuelle. 
+
+> **Remarque :** Il est possible qu'après l'optimisation, les animations présentent un problème menant à une erreur de type "valeur MIME est incorrecte". Cela est dû à une incompatibilité avec certains lecteurs Lottie. Si cela se produit, il est recommandé d'utiliser les fichiers Lottie avant optimisation. Cela est dû aux lignes de type `"p": "data:null;base64,...."` car `data:null` n'est pas reconnu comme un type MIME valide. Pour corriger cela, vous pouvez remplacer `data:null` par `data:image/webp` dans le fichier JSON. 
