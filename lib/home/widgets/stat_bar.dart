@@ -24,8 +24,8 @@ class StatBar extends StatelessWidget {
 
     return Container(
       // make the widget more compact to avoid vertical overflow in grids
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       decoration: BoxDecoration(
         color: const Color(
           0xFF0F4C81,
@@ -35,19 +35,18 @@ class StatBar extends StatelessWidget {
       child: Row(
         children: [
           // icon box
-
           if (icon != null)
             Container(
-              width: 36,
-              height: 36,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
                 color: Colors.white24,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(icon, color: Colors.white, size: 18),
+              child: Icon(icon, color: Colors.white, size: 16),
             )
           else
-            const SizedBox(width: 36, height: 36),
+            const SizedBox(width: 32, height: 32),
 
           const SizedBox(width: 8),
 
@@ -59,13 +58,15 @@ class StatBar extends StatelessWidget {
               children: [
                 Text(
                   label.toUpperCase(),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                   style: const TextStyle(
                     color: Colors.white70,
-                    fontSize: 11,
+                    fontSize: 10,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 // bar background (thinner)
                 LayoutBuilder(
                   builder: (context, constraints) {
@@ -75,7 +76,7 @@ class StatBar extends StatelessWidget {
                       children: [
                         Container(
                           width: double.infinity,
-                          height: 14,
+                          height: 12,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
@@ -86,7 +87,7 @@ class StatBar extends StatelessWidget {
                             // filled portion
                             Container(
                               width: filledWidth,
-                              height: 14,
+                              height: 12,
                               decoration: BoxDecoration(
                                 color: fillColor,
                                 borderRadius: BorderRadius.horizontal(
@@ -106,23 +107,6 @@ class StatBar extends StatelessWidget {
               ],
             ),
           ),
-/*
-          const SizedBox(width: 8),
-          // numeric value box (slightly smaller)
-          Container(
-            width: 40,
-            height: 24,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              '$clamped',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-            ),
-          ),
-          */
         ],
       ),
     );

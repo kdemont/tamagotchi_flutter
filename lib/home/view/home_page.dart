@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:async';
+import 'dart:math';
+
 import 'package:lottie/lottie.dart';
+import 'package:sensors_plus/sensors_plus.dart';
+import 'package:tamagotchi_flutter/models/visual_state.dart';
 
 import '../bloc/home_bloc.dart';
 import '../view_model/home_view_model.dart';
@@ -19,6 +24,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 1; // 0: Play, 1: Chambre (home), 2: Succès
 
+  /*
+  StreamSubscription<AccelerometerEvent>? _accelSub;
+  DateTime _lastShake = DateTime.fromMillisecondsSinceEpoch(0);
+  static const double _shakeThreshold = 18.0; // tune as needed
+*/
   void _onNavTap(int index) {
     if (index == _selectedIndex) return;
     setState(() => _selectedIndex = index);
@@ -125,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: Center(
                       child: Lottie.asset(
-                        'assets/animations/lice_attack.json',
+                        'assets/animations/sad.json',
                         width: MediaQuery.of(context).size.width * 0.6,
                         fit: BoxFit.contain,
                         repeat: true,
@@ -180,4 +190,36 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+/*
+  @override
+  void initState() {
+    super.initState();
+    // listen accelerometer to detect shake and clear lice
+    _accelSub = accelerometerEventStream().listen((AccelerometerEvent event) {
+      final mag = sqrt(
+        event.x * event.x + event.y * event.y + event.z * event.z,
+      );
+      final now = DateTime.now();
+      if (mag > _shakeThreshold &&
+          now.difference(_lastShake).inMilliseconds > 600) {
+        _lastShake = now;
+        final bloc = context.read<HomeBloc>();
+        final st = bloc.state;
+        if (st is HomeLoaded && st.tamagotchi.state == VisualState.liceAttack) {
+          bloc.add(const ClearLice());
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('You shook the phone — lice cleared!'),
+            ),
+          );
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _accelSub?.cancel();
+    super.dispose();
+  }*/
 }

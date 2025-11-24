@@ -30,3 +30,11 @@ class Clean extends HomeEvent {
 class Tick extends HomeEvent {
   const Tick();
 }
+
+class LiceAttack extends HomeEvent {
+  const LiceAttack();
+}
+
+class ClearLice extends HomeEvent {
+  const ClearLice();
+}
