@@ -5,7 +5,6 @@ class Tamagotchi {
   final int happiness;
   final int cleanliness;
   final int age;
-  final DateTime lastUpdateTime;
 
   Tamagotchi({
     required this.name,
@@ -14,7 +13,6 @@ class Tamagotchi {
     required this.happiness,
     required this.cleanliness,
     required this.age,
-    required this.lastUpdateTime,
   });
 
   Tamagotchi copyWith({
@@ -24,7 +22,6 @@ class Tamagotchi {
     int? happiness,
     int? cleanliness,
     int? age,
-    DateTime? lastUpdateTime,
   }) {
     return Tamagotchi(
       name: name ?? this.name,
@@ -33,7 +30,6 @@ class Tamagotchi {
       happiness: happiness ?? this.happiness,
       cleanliness: cleanliness ?? this.cleanliness,
       age: age ?? this.age,
-      lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
     );
   }
 
@@ -44,7 +40,6 @@ class Tamagotchi {
     happiness: 100,
     cleanliness: 100,
     age: 0,
-    lastUpdateTime: DateTime.now(),
   );
 
   Map<String, dynamic> toJson() {
@@ -55,7 +50,6 @@ class Tamagotchi {
       'happiness': happiness,
       'cleanliness': cleanliness,
       'age': age,
-      'lastUpdateTime': lastUpdateTime.toIso8601String(),
     };
   }
 
@@ -66,8 +60,5 @@ class Tamagotchi {
     happiness: (json['happiness'] as num?)?.toInt() ?? 100,
     cleanliness: (json['cleanliness'] as num?)?.toInt() ?? 100,
     age: (json['age'] as num?)?.toInt() ?? 0,
-    lastUpdateTime: json['lastUpdateTime'] != null
-        ? DateTime.parse(json['lastUpdateTime'] as String)
-        : DateTime.now(),
   );
 }

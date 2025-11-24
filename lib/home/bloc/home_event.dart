@@ -27,11 +27,6 @@ class Clean extends HomeEvent {
   const Clean();
 }
 
-class TamagotchiUpdated extends HomeEvent {
-  final Tamagotchi tamagotchi;
-
-  const TamagotchiUpdated(this.tamagotchi);
-
-  @override
-  List<Object?> get props => [tamagotchi];
+class Tick extends HomeEvent {
+  const Tick();
 }

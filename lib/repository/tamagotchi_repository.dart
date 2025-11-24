@@ -30,12 +30,4 @@ class TamagotchiRepository {
     final raw = jsonEncode(t.toJson());
     await prefs.setString(_prefsKey, raw);
   }
-
-  // Reset tamagotchi to initial state (for development/testing)
-  // TODO: remove once in production
-  Future<void> reset() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_prefsKey);
-    print('[TamagotchiRepository] Data reset to initial state');
-  }
 }

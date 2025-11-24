@@ -8,10 +8,9 @@ import '../widgets/stat_bar.dart';
 import '../../shared/widgets/bottom_nav_bar.dart';
 import '../../game/view/game_page.dart';
 import '../../achievements/view/achievements_page.dart';
-import '../../services/tamagotchi_service.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -39,17 +38,7 @@ class _HomePageState extends State<HomePage> {
     final viewModel = HomeViewModel(context.read<HomeBloc>());
 
     return Scaffold(
-      // TODO: remove once in production
-      floatingActionButton: FloatingActionButton(
-        mini: true,
-        backgroundColor: Colors.red.withValues(alpha: 0.7),
-        onPressed: () async {
-          final service = context.read<TamagotchiService>();
-          await service.reset();
-          viewModel.refresh();
-        },
-        child: const Icon(Icons.refresh, size: 20),
-      ),
+      //appBar: AppBar(title: const Text('Tamagotchi')),
       body: Stack(
         children: [
           // Background image that covers the whole screen

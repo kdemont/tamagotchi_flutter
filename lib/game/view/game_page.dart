@@ -4,7 +4,7 @@ import '../../achievements/view/achievements_page.dart';
 import '../../shared/widgets/bottom_nav_bar.dart';
 
 class GamePage extends StatelessWidget {
-  const GamePage({super.key});
+  const GamePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
