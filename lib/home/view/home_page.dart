@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:async';
-import 'dart:math';
+// removed unused imports
 
 import 'package:lottie/lottie.dart';
-import 'package:sensors_plus/sensors_plus.dart';
-import 'package:tamagotchi_flutter/models/visual_state.dart';
+// visual state info accessed through model; explicit import removed
 
+import '../../utils/constants.dart';
 import '../bloc/home_bloc.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/stat_bar.dart';
@@ -21,14 +20,38 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   int _selectedIndex = 1; // 0: Play, 1: Chambre (home), 2: Succès
 
-  /*
-  StreamSubscription<AccelerometerEvent>? _accelSub;
-  DateTime _lastShake = DateTime.fromMillisecondsSinceEpoch(0);
-  static const double _shakeThreshold = 18.0; // tune as needed
-*/
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // Ensure bloc loads current tamagotchi state when page is first shown
+    // (use read to avoid rebuilding here)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeBloc>().add(const LoadTamagotchi());
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      // Reload to apply elapsed time and restart accelerometer if needed
+      context.read<HomeBloc>().add(const LoadTamagotchi());
+    } else if (state == AppLifecycleState.paused) {
+      // stop accelerometer while app is backgrounded
+      context.read<HomeBloc>().stopAccelerometer();
+    }
+  }
+
   void _onNavTap(int index) {
     if (index == _selectedIndex) return;
     setState(() => _selectedIndex = index);
@@ -66,115 +89,120 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Stats at the top
-                  BlocBuilder<HomeBloc, HomeState>(
-                    builder: (context, state) {
-                      if (state is HomeLoaded) {
-                        final t = state.tamagotchi;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Stats in a 2-column grid (two per row)
-                            GridView.count(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 8,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              // childAspectRatio tuned so each item is wide enough for the bar
-                              childAspectRatio: 3.2,
-                              children: [
-                                StatBar(
-                                  label: 'FAIM',
-                                  value: t.hunger,
-                                  icon: Icons.restaurant_menu,
-                                ),
-                                StatBar(
-                                  label: 'ÉNERGIE',
-                                  value: t.energy,
-                                  icon: Icons.bolt,
-                                ),
-                                StatBar(
-                                  label: 'JOIE',
-                                  value: t.happiness,
-                                  icon: Icons.favorite,
-                                ),
-                                StatBar(
-                                  label: 'HYGIÈNE',
-                                  value: t.cleanliness,
-                                  icon: Icons.cleaning_services,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Text(
-                                  t.name,
-                                  style: Theme.of(context).textTheme.titleLarge
-                                      ?.copyWith(color: Color(0xFF9B7C47)),
-                                ),
-                                const SizedBox(width: 16),
-                                Text(
-                                  'Age: ${t.age}',
-                                  style: const TextStyle(
-                                    color: Color(0xFF654B1F),
+                  Expanded(
+                    child: BlocBuilder<HomeBloc, HomeState>(
+                      builder: (context, state) {
+                        if (state is HomeLoaded) {
+                          final t = state.tamagotchi;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Stats in a 2-column grid (two per row)
+                              GridView.count(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                // childAspectRatio tuned so each item is wide enough for the bar
+                                childAspectRatio: 3.2,
+                                children: [
+                                  StatBar(
+                                    label: 'FAIM',
+                                    value: t.hunger,
+                                    icon: Icons.restaurant_menu,
+                                  ),
+                                  StatBar(
+                                    label: 'ÉNERGIE',
+                                    value: t.energy,
+                                    icon: Icons.bolt,
+                                  ),
+                                  StatBar(
+                                    label: 'JOIE',
+                                    value: t.happiness,
+                                    icon: Icons.favorite,
+                                  ),
+                                  StatBar(
+                                    label: 'HYGIÈNE',
+                                    value: t.cleanliness,
+                                    icon: Icons.cleaning_services,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  Text(
+                                    t.name,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(color: Color(0xFF9B7C47)),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Text(
+                                    'Age: ${t.age}',
+                                    style: const TextStyle(
+                                      color: Color(0xFF654B1F),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              // Centered Lottie animation takes available space
+                              Expanded(
+                                child: Center(
+                                  child: Lottie.asset(
+                                    ANIMATION_ASSET_PATH +
+                                        t.state.assetFileName,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.6,
+                                    fit: BoxFit.contain,
+                                    repeat: true,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        );
-                      }
+                              ),
 
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                  ),
+                              // Action buttons at the bottom: round icon buttons for Feed and Sleep
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: viewModel.feed,
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(14),
+                                      backgroundColor: Colors.orangeAccent,
+                                      minimumSize: const Size(56, 56),
+                                    ),
+                                    child: const Icon(
+                                      Icons.restaurant_menu,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: viewModel.clean,
+                                    style: ElevatedButton.styleFrom(
+                                      shape: const CircleBorder(),
+                                      padding: const EdgeInsets.all(14),
+                                      backgroundColor: Colors.deepPurpleAccent,
+                                      minimumSize: const Size(56, 56),
+                                    ),
+                                    child: const Icon(
+                                      Icons.cleaning_services,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        }
 
-                  // Centered Lottie animation takes available space
-                  Expanded(
-                    child: Center(
-                      child: Lottie.asset(
-                        'assets/animations/sad.json',
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        fit: BoxFit.contain,
-                        repeat: true,
-                        // Optionally you can control autoplay: true by default
-                      ),
+                        return const Center(child: CircularProgressIndicator());
+                      },
                     ),
-                  ),
-
-                  // Action buttons at the bottom: round icon buttons for Feed and Sleep
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton(
-                        onPressed: viewModel.feed,
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(14),
-                          backgroundColor: Colors.orangeAccent,
-                          minimumSize: const Size(56, 56),
-                        ),
-                        child: const Icon(
-                          Icons.restaurant_menu,
-                          color: Colors.white,
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: viewModel.clean,
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(14),
-                          backgroundColor: Colors.deepPurpleAccent,
-                          minimumSize: const Size(56, 56),
-                        ),
-                        child: const Icon(
-                          Icons.cleaning_services,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
@@ -190,36 +218,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-/*
-  @override
-  void initState() {
-    super.initState();
-    // listen accelerometer to detect shake and clear lice
-    _accelSub = accelerometerEventStream().listen((AccelerometerEvent event) {
-      final mag = sqrt(
-        event.x * event.x + event.y * event.y + event.z * event.z,
-      );
-      final now = DateTime.now();
-      if (mag > _shakeThreshold &&
-          now.difference(_lastShake).inMilliseconds > 600) {
-        _lastShake = now;
-        final bloc = context.read<HomeBloc>();
-        final st = bloc.state;
-        if (st is HomeLoaded && st.tamagotchi.state == VisualState.liceAttack) {
-          bloc.add(const ClearLice());
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('You shook the phone — lice cleared!'),
-            ),
-          );
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _accelSub?.cancel();
-    super.dispose();
-  }*/
 }

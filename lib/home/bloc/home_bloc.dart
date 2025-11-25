@@ -3,10 +3,12 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 
 import '../../models/tamagotchi.dart';
 import '../../models/visual_state.dart';
 import '../../repository/tamagotchi_repository.dart';
+import '../../utils/constants.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
@@ -14,7 +16,25 @@ part 'home_state.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final TamagotchiRepository repository;
   // Interval between ticks. Adjust to production value (e.g. 60 seconds).
-  static const Duration tickInterval = Duration(seconds: 2);
+  static const Duration tickInterval = Duration(seconds: 1);
+
+  final double gThreshold = 2.5; // g-force threshold for shake detection
+  final int windowMs = 3000;
+  final int requiredCount = 10;
+
+  StreamSubscription<AccelerometerEvent>? _sub;
+  final List<int> _timestamps = [];
+
+  void startAccelerometer() {
+    if (_sub != null) return;
+    _sub = accelerometerEventStream().listen(_onAccel);
+  }
+
+  void stopAccelerometer() {
+    _sub?.cancel();
+    _sub = null;
+    _timestamps.clear();
+  }
 
   Timer? _ticker;
   // optional counter for batching saves (unused for now)
@@ -37,16 +57,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     _ticker = Timer.periodic(dur, (_) => add(const Tick()));
   }
 
-  void _listenAccelerometer(){
-    // Placeholder for accelerometer-based tick acceleration logic.
-    // In a real app, this would interface with device sensors.
-  }
-
   @override
   Future<void> close() {
     _ticker?.cancel();
+    stopAccelerometer();
     return super.close();
   }
+
 
   Future<void> _onLoad(LoadTamagotchi event, Emitter<HomeState> emit) async {
     final tama = await repository.getTamagotchi();
@@ -65,12 +82,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           cleanliness: (tama.cleanliness - ticks).clamp(0, 100),
         );
         await repository.saveTamagotchi(updated);
+        // if after applying elapsed ticks the tama is infested, start accelerometer
+        if (updated.state == VisualState.liceAttack) {
+          startAccelerometer();
+        }
         emit(HomeLoaded(tamagotchi: updated));
         return;
       }
     }
 
+    // Emit loaded tama and start accelerometer if needed
     emit(HomeLoaded(tamagotchi: tama));
+    if (tama.state == VisualState.liceAttack) {
+      startAccelerometer();
+    }
   }
 
   void _onFeed(Feed event, Emitter<HomeState> emit) {
@@ -118,26 +143,33 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  void _onLiceAttack(LiceAttack event, Emitter<HomeState> emit) {
+  Future<void> _onLiceAttack(LiceAttack event, Emitter<HomeState> emit) async {
     if (state is HomeLoaded) {
       final current = (state as HomeLoaded).tamagotchi;
-      if (current.state != VisualState.liceAttack) return; // already infested
+
+      if (current.state == VisualState.liceAttack) return; // already infested
+
+      startAccelerometer();
+
       final updated = current.copyWith(state: VisualState.liceAttack);
-      repository.saveTamagotchi(updated);
+      await repository.saveTamagotchi(updated);
       emit(HomeLoaded(tamagotchi: updated));
     }
   }
 
-  void _onClearLice(ClearLice event, Emitter<HomeState> emit) {
+  Future<void> _onClearLice(ClearLice event, Emitter<HomeState> emit) async {
     if (state is HomeLoaded) {
       final current = (state as HomeLoaded).tamagotchi;
       if (current.state != VisualState.liceAttack) return;
+
+      stopAccelerometer();
+
       final updated = current.copyWith(
         state: VisualState.idle,
-        cleanliness: (current.cleanliness - 10).clamp(0, 100),
+        cleanliness: (current.cleanliness + 20).clamp(0, 100),
       );
       // clearing lice slightly reduces cleanliness
-      repository.saveTamagotchi(updated);
+      await repository.saveTamagotchi(updated);
       emit(HomeLoaded(tamagotchi: updated));
     }
   }
@@ -147,9 +179,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final current = (state as HomeLoaded).tamagotchi;
       // small chance to trigger lice attack when not already infested
       if (current.state != VisualState.liceAttack) {
+        double liceChance = 0.05; // base 5% per tick
+        if (current.cleanliness < 30) {
+          liceChance += 0.2; // +20% if dirty
+        }
+
         final rng = Random();
         // e.g. 0.5% chance per tick
-        if (rng.nextDouble() < 0.005) {
+        if (rng.nextDouble() < liceChance) {
+          print('[TamagotchiBloc] Lice Attack triggered by tick');
           add(const LiceAttack());
         }
       }
@@ -164,4 +202,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
+  void _onAccel(AccelerometerEvent e) {
+    final g = sqrt(e.x * e.x + e.y * e.y + e.z * e.z) / GRAVITY_EARTH;
+    if (g > gThreshold) {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      _timestamps.add(now);
+      _timestamps.removeWhere((t) => t < now - windowMs);
+
+      if (_timestamps.length >= requiredCount) {
+        _timestamps.clear();
+        stopAccelerometer();
+        // Trigger clear lice event
+        add(const ClearLice());
+      }
+    }
+  }
 }

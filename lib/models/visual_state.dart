@@ -1,15 +1,16 @@
 enum VisualState {
-  idle(0),
-  yawning(1),
-  hungry(1),
-  crying(2),
-  sleeping(2),
-  eating(3),
-  cleaning(3),
-  liceAttack(4);
+  idle(0, 'cuddle.json'),
+  yawning(1, 'yawning.json'),
+  hungry(1, 'hungry.json'),
+  crying(2, 'crying.json'),
+  sleeping(2, 'sleeping.json'),
+  eating(3, 'eating.json'),
+  cleaning(3, 'cleaning.json'),
+  liceAttack(4, 'lice_attack.json'),;
 
   final int priority;
-  const VisualState(this.priority);
+  final String assetFileName;
+  const VisualState(this.priority, this.assetFileName);
 
   /// Determines if `newState` can interrupt `current`.
   static bool canInterrupt(VisualState current, VisualState newState) {
