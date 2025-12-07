@@ -12,4 +12,5 @@ class HomeViewModel {
   void sleep() => bloc.add(const Sleep());
   void clean() => bloc.add(const Clean());
   void refresh() => bloc.add(const LoadTamagotchi());
+  void nonRepeatingEventComplete() => bloc.add(const NonRepeatingEventComplete());
 }

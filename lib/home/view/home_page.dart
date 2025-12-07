@@ -46,11 +46,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
-      // Reload to apply elapsed time and restart accelerometer if needed
+      // Reload to apply elapsed time and restart sensors if needed
       context.read<HomeBloc>().add(const LoadTamagotchi());
+      context.read<HomeBloc>().startLightSensor();
     } else if (state == AppLifecycleState.paused) {
-      // stop accelerometer while app is backgrounded
+      // Stop sensors while app is backgrounded
       context.read<HomeBloc>().stopAccelerometer();
+      context.read<HomeBloc>().stopLightSensor();
     }
   }
 
@@ -160,9 +162,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     width:
                                         MediaQuery.of(context).size.width * 0.6,
                                     onSequenceComplete:
-                                        () => context.read<HomeBloc>().add(
-                                          const NonRepeatingEventComplete(),
-                                        ),
+                                        () =>
+                                            viewModel
+                                                .nonRepeatingEventComplete(),
                                   ),
                                 ),
                               ),
