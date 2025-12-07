@@ -18,9 +18,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   // Interval between ticks. Adjust to production value (e.g. 60 seconds).
   static const Duration tickInterval = Duration(seconds: 1);
 
+  // Constants for shake detection
   final double gThreshold = 2.5; // g-force threshold for shake detection
   final int windowMs = 3000;
   final int requiredCount = 10;
+
+  final Random _random = Random();
 
   StreamSubscription<AccelerometerEvent>? _sub;
   final List<int> _timestamps = [];
@@ -48,6 +51,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<Tick>(_onTick);
     on<LiceAttack>(_onLiceAttack);
     on<ClearLice>(_onClearLice);
+    on<NonRepeatingEventComplete>(_onNonRepeatingEventComplete);
     _startTicker();
   }
 
@@ -64,31 +68,28 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     return super.close();
   }
 
-
   Future<void> _onLoad(LoadTamagotchi event, Emitter<HomeState> emit) async {
     final tama = await repository.getTamagotchi();
 
     // Apply ticks that occurred while the app was closed/backgrounded
-    final lastSaved = await repository.getLastSavedTime();
-    if (lastSaved != null) {
-      final now = DateTime.now();
-      final elapsed = now.difference(lastSaved);
-      final ticks = elapsed.inSeconds ~/ tickInterval.inSeconds;
-      if (ticks > 0) {
-        final updated = tama.copyWith(
-          hunger: (tama.hunger - ticks).clamp(0, 100),
-          energy: (tama.energy - ticks).clamp(0, 100),
-          happiness: (tama.happiness - ticks).clamp(0, 100),
-          cleanliness: (tama.cleanliness - ticks).clamp(0, 100),
-        );
-        await repository.saveTamagotchi(updated);
-        // if after applying elapsed ticks the tama is infested, start accelerometer
-        if (updated.state == VisualState.liceAttack) {
-          startAccelerometer();
-        }
-        emit(HomeLoaded(tamagotchi: updated));
-        return;
+    final now = DateTime.now();
+    final elapsed = now.difference(tama.lastUpdateTime);
+    final ticks = elapsed.inSeconds ~/ tickInterval.inSeconds;
+    if (ticks > 0) {
+      final updated = tama.copyWith(
+        hunger: (tama.hunger - ticks).clamp(0, 100),
+        energy: (tama.energy - ticks).clamp(0, 100),
+        happiness: (tama.happiness - ticks).clamp(0, 100),
+        cleanliness: (tama.cleanliness - ticks).clamp(0, 100),
+        lastUpdateTime: now,
+      );
+      await repository.saveTamagotchi(updated);
+      // if after applying elapsed ticks the tama is infested, start accelerometer
+      if (updated.state == VisualState.liceAttack) {
+        startAccelerometer();
       }
+      emit(HomeLoaded(tamagotchi: updated));
+      return;
     }
 
     // Emit loaded tama and start accelerometer if needed
@@ -104,6 +105,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final updated = current.copyWith(
         hunger: (current.hunger + 15).clamp(0, 100),
         happiness: (current.happiness + 5).clamp(0, 100),
+        lastUpdateTime: DateTime.now(),
       );
       repository.saveTamagotchi(updated);
       emit(HomeLoaded(tamagotchi: updated));
@@ -116,6 +118,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final updated = current.copyWith(
         happiness: (current.happiness + 15).clamp(0, 100),
         energy: (current.energy - 10).clamp(0, 100),
+        lastUpdateTime: DateTime.now(),
       );
       repository.saveTamagotchi(updated);
       emit(HomeLoaded(tamagotchi: updated));
@@ -128,6 +131,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final updated = current.copyWith(
         energy: (current.energy + 30).clamp(0, 100),
         age: current.age + 1,
+        lastUpdateTime: DateTime.now(),
       );
       repository.saveTamagotchi(updated);
       emit(HomeLoaded(tamagotchi: updated));
@@ -137,9 +141,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   void _onClean(Clean event, Emitter<HomeState> emit) {
     if (state is HomeLoaded) {
       final current = (state as HomeLoaded).tamagotchi;
-      final updated = current.copyWith(cleanliness: 100);
-      repository.saveTamagotchi(updated);
-      emit(HomeLoaded(tamagotchi: updated));
+
+      if (VisualState.canInterrupt(current.state, VisualState.cleaning)) {
+        final newCleanliness = (current.cleanliness + 30).clamp(0, 100);
+        final updated = current.copyWith(
+          cleanliness: newCleanliness,
+          state: VisualState.cleaning,
+          lastUpdateTime: DateTime.now(),
+        );
+        repository.saveTamagotchi(updated);
+        emit(HomeLoaded(tamagotchi: updated));
+      } else {
+        return; // cannot interrupt current state
+      }
     }
   }
 
@@ -151,7 +165,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       startAccelerometer();
 
-      final updated = current.copyWith(state: VisualState.liceAttack);
+      final updated = current.copyWith(
+        state: VisualState.liceAttack,
+        lastUpdateTime: DateTime.now(),
+      );
       await repository.saveTamagotchi(updated);
       emit(HomeLoaded(tamagotchi: updated));
     }
@@ -167,8 +184,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final updated = current.copyWith(
         state: VisualState.idle,
         cleanliness: (current.cleanliness + 20).clamp(0, 100),
+        lastUpdateTime: DateTime.now(),
       );
       // clearing lice slightly reduces cleanliness
+      await repository.saveTamagotchi(updated);
+      emit(HomeLoaded(tamagotchi: updated));
+    }
+  }
+
+  Future<void> _onNonRepeatingEventComplete(
+    NonRepeatingEventComplete event,
+    Emitter<HomeState> emit,
+  ) async {
+    if (state is HomeLoaded) {
+      final current = (state as HomeLoaded).tamagotchi;
+
+      final updated = current.copyWith(
+        state: VisualState.idle,
+        lastUpdateTime: DateTime.now(),
+      );
       await repository.saveTamagotchi(updated);
       emit(HomeLoaded(tamagotchi: updated));
     }
@@ -184,18 +218,46 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           liceChance += 0.2; // +20% if dirty
         }
 
-        final rng = Random();
         // e.g. 0.5% chance per tick
-        if (rng.nextDouble() < liceChance) {
+        if (_random.nextDouble() < liceChance) {
           print('[TamagotchiBloc] Lice Attack triggered by tick');
           add(const LiceAttack());
         }
       }
+
+      final newHunger = (current.hunger - 2).clamp(0, 100);
+      print('[TamagotchiService] Hunger: ${current.hunger} -> $newHunger');
+
+      final newEnergy = (current.energy - 1).clamp(0, 100);
+      print('[TamagotchiService] Energy: ${current.energy} -> $newEnergy');
+
+      int newHappiness;
+      if (current.hunger < 30 || current.energy < 30) {
+        newHappiness = (current.happiness - 2).clamp(0, 100);
+        print(
+          '[TamagotchiService] Happiness: ${current.happiness} -> $newHappiness (low stats penalty)',
+        );
+      } else {
+        newHappiness = (current.happiness - 1).clamp(0, 100);
+        print(
+          '[TamagotchiService] Happiness: ${current.happiness} -> $newHappiness',
+        );
+      }
+
+      var newCleanliness = current.cleanliness;
+      if (_random.nextDouble() < 0.05) {
+        newCleanliness = (current.cleanliness - 15).clamp(0, 100);
+        print(
+          '[TamagotchiService] POOP EVENT! Cleanliness: ${current.cleanliness} -> $newCleanliness',
+        );
+      }
+
       final updated = current.copyWith(
-        hunger: (current.hunger - 1).clamp(0, 100),
-        energy: (current.energy - 1).clamp(0, 100),
-        happiness: (current.happiness - 1).clamp(0, 100),
-        cleanliness: (current.cleanliness - 1).clamp(0, 100),
+        hunger: newHunger,
+        energy: newEnergy,
+        happiness: newHappiness,
+        cleanliness: newCleanliness,
+        lastUpdateTime: DateTime.now(),
       );
       repository.saveTamagotchi(updated);
       emit(HomeLoaded(tamagotchi: updated));
@@ -217,4 +279,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     }
   }
+
+
 }
