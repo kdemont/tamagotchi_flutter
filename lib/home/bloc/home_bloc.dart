@@ -30,7 +30,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   void startAccelerometer() {
     if (_sub != null) return;
-    _sub = accelerometerEventStream().listen(_onAccel);
+    print('[TamagotchiBloc] Starting accelerometer...');
+    _sub = userAccelerometerEventStream().listen(_onAccel, onError: (e) {
+      print('[TamagotchiBloc] Accelerometer error: $e');
+    });
   }
 
   void stopAccelerometer() {
@@ -264,7 +267,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  void _onAccel(AccelerometerEvent e) {
+  void _onAccel(UserAccelerometerEvent e) {
     final g = sqrt(e.x * e.x + e.y * e.y + e.z * e.z) / GRAVITY_EARTH;
     if (g > gThreshold) {
       final now = DateTime.now().millisecondsSinceEpoch;

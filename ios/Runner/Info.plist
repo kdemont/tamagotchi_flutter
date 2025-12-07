@@ -46,6 +46,7 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
     <key>NSMotionUsageDescription</key>
-    <string>This app requires access to the barometer to provide altitude information.</string>
+    <string>Cette application utilise l'accéléromètre pour détecter les secousses du téléphone et interagir avec votre Tamagotchi.</string>
+
 </dict>
 </plist>
