@@ -38,3 +38,7 @@ class LiceAttack extends HomeEvent {
 class ClearLice extends HomeEvent {
   const ClearLice();
 }
+
+class NonRepeatingEventComplete extends HomeEvent {
+  const NonRepeatingEventComplete();
+}

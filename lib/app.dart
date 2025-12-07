@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'home/bloc/home_bloc.dart';
 import 'repository/tamagotchi_repository.dart';
 import 'home/view/home_page.dart';
+import 'splash/splash_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -14,11 +15,12 @@ class MyApp extends StatelessWidget {
     return RepositoryProvider.value(
       value: repo,
       child: BlocProvider(
-        create: (_) => HomeBloc(repository: repo)..add(LoadTamagotchi()),
+        create: (_) => HomeBloc(repository: repo),
         child: MaterialApp(
           title: 'Tamagotchi MVVM + BLoC',
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: const HomePage(),
+          home: SplashPage(nextPageBuilder: () => const HomePage()),
+          //home: const HomePage(),
         ),
       ),
     );

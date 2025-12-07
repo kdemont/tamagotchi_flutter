@@ -1,6 +1,8 @@
 import 'package:tamagotchi_flutter/models/visual_state.dart';
 
 class Tamagotchi {
+
+  // Pourquoi mettre final ?
   final String name;
   final int hunger;
   final int energy;
