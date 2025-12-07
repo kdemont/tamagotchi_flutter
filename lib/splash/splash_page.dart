@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tamagotchi_flutter/utils/lottie_preloader.dart';
 
-import '../utils/my_lottie_cache.dart';
-
 /// Splash screen that preloads all Lottie animations before navigating to home.
 class SplashPage extends StatefulWidget {
   final Widget Function() nextPageBuilder;
