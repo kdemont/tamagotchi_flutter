@@ -5,8 +5,9 @@ enum VisualState {
   //happy(1, [VisualAnimation('happy_bouncing.json', false)]),
   crying(2, [VisualAnimation('crying.json', false)]),
   sleeping(2, [
-    VisualAnimation('cuddle.json', true),
-  ]), // TODO: ajouter sleeping.json
+    VisualAnimation('sleeping_init.json', false),
+    VisualAnimation('sleeping_cycle.json', true),
+  ]),
   eating(3, [VisualAnimation('happy_bouncing.json', false)]),
   cleaning(3, [VisualAnimation('cleaning.json', false)]),
   liceAttack(4, [
