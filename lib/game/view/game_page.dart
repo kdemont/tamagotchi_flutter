@@ -1,30 +1,37 @@
 import 'package:flutter/material.dart';
-import '../../home/view/home_page.dart';
-import '../../achievements/view/achievements_page.dart';
-import '../../shared/widgets/bottom_nav_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../home/bloc/home_bloc.dart';
+import '../bloc/game_bloc.dart';
+import 'widgets/game_rules_view.dart';
+import 'widgets/game_playing_view.dart';
+import 'widgets/game_won_view.dart';
+import 'widgets/game_lost_view.dart';
 
 class GamePage extends StatelessWidget {
-  const GamePage({Key? key}) : super(key: key);
+  const GamePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Jeu')),
-      body: const Center(child: Text('Page Jeu - à implémenter')),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: 0,
-        onTap: (index) {
-          if (index == 0) return;
-          if (index == 1) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const HomePage()),
-            );
-          } else if (index == 2) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const AchievementsPage()),
-            );
-          }
-        },
+    return BlocProvider(
+      create: (context) => GameBloc(
+        homeBloc: context.read<HomeBloc>(),
+      ),
+      child: Scaffold(
+        body: BlocBuilder<GameBloc, GameState>(
+          builder: (context, state) {
+            if (state is GameRules) {
+              return const GameRulesView();
+            } else if (state is GamePlaying) {
+              return GamePlayingView(state: state);
+            } else if (state is GameWon) {
+              return GameWonView(state: state);
+            } else if (state is GameLost) {
+              return GameLostView(state: state);
+            }
+            return const Center(child: CircularProgressIndicator());
+          },
+        ),
       ),
     );
   }
