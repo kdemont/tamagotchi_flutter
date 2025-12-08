@@ -60,11 +60,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (index == 0) {
       Navigator.of(
         context,
-      ).push(MaterialPageRoute(builder: (_) => const GamePage()));
+      ).push(MaterialPageRoute(builder: (_) => const GamePage())).then((_) {
+        // Reset to home when returning from game
+        setState(() => _selectedIndex = 1);
+      });
     } else if (index == 2) {
       Navigator.of(
         context,
-      ).push(MaterialPageRoute(builder: (_) => const AchievementsPage()));
+      ).push(MaterialPageRoute(builder: (_) => const AchievementsPage())).then((_) {
+        // Reset to home when returning from achievements
+        setState(() => _selectedIndex = 1);
+      });
     }
   }
 
