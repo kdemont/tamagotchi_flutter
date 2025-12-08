@@ -52,7 +52,7 @@ class _GamePlayingViewState extends State<GamePlayingView> {
           children: [
             // Header with back button
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(8.0),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Container(
@@ -77,32 +77,32 @@ class _GamePlayingViewState extends State<GamePlayingView> {
             // Tamagotchi image
             Image.asset(
               'assets/images/tamagotchi.png',
-              width: 120,
-              height: 120,
+              width: 150,
+              height: 150,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  width: 120,
-                  height: 120,
+                  width: 150,
+                  height: 150,
                   decoration: BoxDecoration(
                     color: Colors.green.shade300,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.pets,
-                    size: 60,
+                    size: 75,
                     color: Colors.white,
                   ),
                 );
               },
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             // Hint box
             SizedBox(
-              height: 50,
+              height: 45,
               child: widget.state.hint != null
                   ? Container(
                       margin: const EdgeInsets.symmetric(horizontal: 24),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(color: const Color(0xFF2962FF), width: 2),
@@ -114,13 +114,13 @@ class _GamePlayingViewState extends State<GamePlayingView> {
                           Text(
                             widget.state.hint!,
                             style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Icon(Icons.arrow_upward, size: 24),
+                          const Icon(Icons.arrow_upward, size: 20),
                         ],
                       ),
                     )
@@ -130,7 +130,7 @@ class _GamePlayingViewState extends State<GamePlayingView> {
             // Input display
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 24),
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 12),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
@@ -139,14 +139,14 @@ class _GamePlayingViewState extends State<GamePlayingView> {
                 child: Text(
                   _currentInput.isEmpty ? '' : _currentInput,
                   style: const TextStyle(
-                    fontSize: 48,
+                    fontSize: 42,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             // Custom numpad
             Container(
               decoration: const BoxDecoration(
