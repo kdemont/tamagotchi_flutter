@@ -42,3 +42,24 @@ class ClearLice extends HomeEvent {
 class NonRepeatingEventComplete extends HomeEvent {
   const NonRepeatingEventComplete();
 }
+
+class PoopEvent extends HomeEvent {
+  const PoopEvent();
+}
+
+class StartCleaning extends HomeEvent {
+  const StartCleaning();
+}
+
+class RubPoop extends HomeEvent {
+  final int poopIndex; // 0, 1, or 2 for the three positions
+
+  const RubPoop(this.poopIndex);
+
+  @override
+  List<Object?> get props => [poopIndex];
+}
+
+class ExitCleaning extends HomeEvent {
+  const ExitCleaning();
+}

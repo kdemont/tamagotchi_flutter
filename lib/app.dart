@@ -6,7 +6,7 @@ import 'home/view/home_page.dart';
 import 'splash/splash_page.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp(map, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
         create: (_) => HomeBloc(repository: repo),
         child: MaterialApp(
           title: 'Tamagotchi MVVM + BLoC',
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(primarySwatch: Colors.blue),
           home: SplashPage(nextPageBuilder: () => const HomePage()),
           //home: const HomePage(),
