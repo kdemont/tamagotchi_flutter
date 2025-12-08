@@ -11,6 +11,7 @@ import '../../models/visual_state.dart';
 import '../bloc/home_bloc.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/stat_bar.dart';
+import '../widgets/poop_overlay.dart';
 import '../../shared/widgets/bottom_nav_bar.dart';
 import '../../game/view/game_page.dart';
 import '../../achievements/view/achievements_page.dart';
@@ -60,11 +61,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     if (index == 0) {
       Navigator.of(
         context,
-      ).push(MaterialPageRoute(builder: (_) => const GamePage()));
+      ).push(MaterialPageRoute(builder: (_) => const GamePage())).then((_) {
+        setState(() => _selectedIndex = 1);
+      });
     } else if (index == 2) {
       Navigator.of(
         context,
-      ).push(MaterialPageRoute(builder: (_) => const AchievementsPage()));
+      ).push(MaterialPageRoute(builder: (_) => const AchievementsPage())).then((_) {
+        setState(() => _selectedIndex = 1);
+      });
     }
   }
 
@@ -153,17 +158,61 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
                               // Centered Lottie animation takes available space
                               Expanded(
-                                child: Center(
-                                  child: _AnimationSequencePlayer(
-                                    key: ValueKey(t.state),
-                                    animations: t.state.animations,
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.6,
-                                    onSequenceComplete:
-                                        () => context.read<HomeBloc>().add(
-                                          const NonRepeatingEventComplete(),
+                                child: Stack(
+                                  children: [
+                                    // Tamagotchi animation (hidden in cleaning mode)
+                                    if (!state.isCleaningMode)
+                                      Center(
+                                        child: _AnimationSequencePlayer(
+                                          key: ValueKey(t.state),
+                                          animations: t.state.animations,
+                                          width: MediaQuery.of(context).size.width *
+                                              0.6,
+                                          onSequenceComplete: () =>
+                                              context.read<HomeBloc>().add(
+                                                    const NonRepeatingEventComplete(),
+                                                  ),
                                         ),
-                                  ),
+                                      ),
+                                    // "Frotte !" text in cleaning mode
+                                    if (state.isCleaningMode)
+                                      const Center(
+                                        child: Text(
+                                          'Frotte !',
+                                          style: TextStyle(
+                                            fontSize: 48,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF9B7C47),
+                                          ),
+                                        ),
+                                      ),
+                                    // Poop overlay
+                                    PoopOverlay(
+                                      poopCount: t.poopCount,
+                                      isCleaningMode: state.isCleaningMode,
+                                      poopRubCounts: state.poopRubCounts,
+                                    ),
+                                    // Exit cleaning mode button
+                                    if (state.isCleaningMode)
+                                      Positioned(
+                                        top: 10,
+                                        right: 10,
+                                        child: ElevatedButton(
+                                          onPressed: () => context
+                                              .read<HomeBloc>()
+                                              .add(const ExitCleaning()),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                            foregroundColor: Colors.white,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 16,
+                                              vertical: 8,
+                                            ),
+                                          ),
+                                          child: const Text('Quitter'),
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               ),
 
@@ -202,10 +251,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                   ),
                                   ElevatedButton(
                                     onPressed:
-                                        VisualState.canInterrupt(
-                                              t.state,
-                                              VisualState.cleaning,
-                                            )
+                                        // Allow cleaning if there are poops OR if can interrupt
+                                        (t.poopCount > 0 ||
+                                                VisualState.canInterrupt(
+                                                  t.state,
+                                                  VisualState.cleaning,
+                                                ))
                                             ? viewModel.clean
                                             : null,
                                     style: ElevatedButton.styleFrom(
@@ -219,10 +270,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     child: Icon(
                                       Icons.cleaning_services,
                                       color:
-                                          VisualState.canInterrupt(
-                                                t.state,
-                                                VisualState.cleaning,
-                                              )
+                                          (t.poopCount > 0 ||
+                                                  VisualState.canInterrupt(
+                                                    t.state,
+                                                    VisualState.cleaning,
+                                                  ))
                                               ? Colors.white
                                               : Colors.grey.shade600,
                                     ),

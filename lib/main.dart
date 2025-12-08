@@ -10,5 +10,5 @@ main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(const MyApp());
+  runApp(const MyApp({}));
 }
