@@ -23,6 +23,10 @@ class Sleep extends HomeEvent {
   const Sleep();
 }
 
+class WakeUp extends HomeEvent {
+  const WakeUp();
+}
+
 class Clean extends HomeEvent {
   const Clean();
 }

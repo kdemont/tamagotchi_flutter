@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:ambient_light/ambient_light.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 import '../../models/tamagotchi.dart';
@@ -25,18 +26,40 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   final Random _random = Random();
 
-  StreamSubscription<AccelerometerEvent>? _sub;
+  // Accelerometer subscription for shake detection
+  StreamSubscription<AccelerometerEvent>? _accelSub;
   final List<int> _timestamps = [];
 
+  // Light sensor for sleep detection
+  final AmbientLight _ambientLight = AmbientLight();
+  StreamSubscription<double>? _lightSub;
+
+  static const double lightThreshold = 50.0; // lux threshold for darkness
+  bool _isSleeping = false; // prevent multiple sleep triggers
+
   void startAccelerometer() {
-    if (_sub != null) return;
-    _sub = accelerometerEventStream().listen(_onAccel);
+    if (_accelSub != null) return;
+    _accelSub = accelerometerEventStream().listen(_onAccel);
   }
 
   void stopAccelerometer() {
-    _sub?.cancel();
-    _sub = null;
+    _accelSub?.cancel();
+    _accelSub = null;
     _timestamps.clear();
+  }
+
+  void startLightSensor() {
+    if (_lightSub != null) return;
+    try {
+      _lightSub = _ambientLight.ambientLightStream.listen(_onLight);
+    } catch (e) {
+      print('[HomeBloc] Light sensor not available: $e');
+    }
+  }
+
+  void stopLightSensor() {
+    _lightSub?.cancel();
+    _lightSub = null;
   }
 
   Timer? _ticker;
@@ -47,6 +70,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<Feed>(_onFeed);
     on<Play>(_onPlay);
     on<Sleep>(_onSleep);
+    on<WakeUp>(_onWakeUp);
     on<Clean>(_onClean);
     on<Tick>(_onTick);
     on<LiceAttack>(_onLiceAttack);
@@ -57,6 +81,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<RubPoop>(_onRubPoop);
     on<ExitCleaning>(_onExitCleaning);
     _startTicker();
+    startLightSensor(); // Start listening to light sensor
   }
 
   void _startTicker({Duration? interval}) {
@@ -69,6 +94,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> close() {
     _ticker?.cancel();
     stopAccelerometer();
+    stopLightSensor();
     return super.close();
   }
 
@@ -132,11 +158,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   void _onSleep(Sleep event, Emitter<HomeState> emit) {
     if (state is HomeLoaded) {
       final current = (state as HomeLoaded).tamagotchi;
+
+      // Passer en état sleeping - l'énergie sera récupérée progressivement dans _onTick
       final updated = current.copyWith(
-        energy: (current.energy + 30).clamp(0, 100),
-        age: current.age + 1,
+        state: VisualState.sleeping,
         lastUpdateTime: DateTime.now(),
       );
+
+      repository.saveTamagotchi(updated);
+      emit(HomeLoaded(tamagotchi: updated));
+    }
+  }
+
+  void _onWakeUp(WakeUp event, Emitter<HomeState> emit) {
+    if (state is HomeLoaded) {
+      final current = (state as HomeLoaded).tamagotchi;
+
+      final updated = current.copyWith(
+        state: VisualState.idle,
+        lastUpdateTime: DateTime.now(),
+      );
+      // clearing lice slightly reduces cleanliness
       repository.saveTamagotchi(updated);
       emit(HomeLoaded(tamagotchi: updated));
     }
@@ -223,6 +265,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   void _onTick(Tick event, Emitter<HomeState> emit) {
     if (state is HomeLoaded) {
       final current = (state as HomeLoaded).tamagotchi;
+
+      // Si le tamagotchi dort, il récupère de l'énergie et ne perd pas de stats
+      if (current.state == VisualState.sleeping) {
+        final newEnergy = (current.energy + 5).clamp(0, 100);
+        print(
+          '[TamagotchiService] Sleeping - Energy: ${current.energy} -> $newEnergy',
+        );
+
+        final updated = current.copyWith(
+          energy: newEnergy,
+          lastUpdateTime: DateTime.now(),
+        );
+        repository.saveTamagotchi(updated);
+        emit(HomeLoaded(tamagotchi: updated));
+        return; // Ne pas exécuter le reste du tick pendant le sommeil
+      }
+
       // small chance to trigger lice attack when not already infested
       if (current.state != VisualState.liceAttack) {
         double liceChance = 0.05; // base 5% per tick
@@ -290,6 +349,34 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
+  void _onLight(double lux) {
+    if (state is HomeLoaded) {
+      final current = (state as HomeLoaded).tamagotchi;
+
+      // print(
+      //    '[HomeBloc] Light sensor: ${lux.toStringAsFixed(2)} lux, current state: ${current.state}, isSleeping: $_isSleeping',
+      // );
+
+      if (lux < lightThreshold && !_isSleeping) {
+        // It's dark, trigger sleep if no higher priority event
+        if (VisualState.canInterrupt(current.state, VisualState.sleeping)) {
+          print(
+            '[HomeBloc] Light sensor: ${lux.toStringAsFixed(2)} lux (dark) - triggering Sleep',
+          );
+          _isSleeping = true;
+          add(const Sleep());
+        }
+      } else if (lux >= lightThreshold && _isSleeping) {
+        // Light is back, reset sleep flag
+        print(
+          '[HomeBloc] Light sensor: ${lux.toStringAsFixed(2)} lux (bright) - waking up',
+        );
+        _isSleeping = false;
+        add(const WakeUp());
+      }
+    }
+  }
+  
   Future<void> _onPoopEvent(PoopEvent event, Emitter<HomeState> emit) async {
     if (state is HomeLoaded) {
       final currentState = state as HomeLoaded;
