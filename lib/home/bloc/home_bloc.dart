@@ -76,6 +76,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<LiceAttack>(_onLiceAttack);
     on<ClearLice>(_onClearLice);
     on<NonRepeatingEventComplete>(_onNonRepeatingEventComplete);
+    on<PoopEvent>(_onPoopEvent);
+    on<StartCleaning>(_onStartCleaning);
+    on<RubPoop>(_onRubPoop);
+    on<ExitCleaning>(_onExitCleaning);
     _startTicker();
     startLightSensor(); // Start listening to light sensor
   }
@@ -182,8 +186,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   void _onClean(Clean event, Emitter<HomeState> emit) {
     if (state is HomeLoaded) {
-      final current = (state as HomeLoaded).tamagotchi;
+      final currentState = state as HomeLoaded;
+      final current = currentState.tamagotchi;
 
+      // If there are poops, enter cleaning mode instead of regular cleaning
+      if (current.poopCount > 0) {
+        add(const StartCleaning());
+        return;
+      }
+
+      // Regular cleaning if no poops
       if (VisualState.canInterrupt(current.state, VisualState.cleaning)) {
         final newCleanliness = (current.cleanliness + 30).clamp(0, 100);
         final updated = current.copyWith(
@@ -192,7 +204,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           lastUpdateTime: DateTime.now(),
         );
         repository.saveTamagotchi(updated);
-        emit(HomeLoaded(tamagotchi: updated));
+        emit(currentState.copyWith(tamagotchi: updated));
       } else {
         return; // cannot interrupt current state
       }
@@ -279,47 +291,45 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         // e.g. 0.5% chance per tick
         if (_random.nextDouble() < liceChance) {
-          print('[TamagotchiBloc] Lice Attack triggered by tick');
+          //print('[TamagotchiBloc] Lice Attack triggered by tick');
           add(const LiceAttack());
         }
       }
 
       final newHunger = (current.hunger - 2).clamp(0, 100);
-      print('[TamagotchiService] Hunger: ${current.hunger} -> $newHunger');
+      //print('[TamagotchiService] Hunger: ${current.hunger} -> $newHunger');
 
       final newEnergy = (current.energy - 1).clamp(0, 100);
-      print('[TamagotchiService] Energy: ${current.energy} -> $newEnergy');
+      //print('[TamagotchiService] Energy: ${current.energy} -> $newEnergy');
 
       int newHappiness;
       if (current.hunger < 30 || current.energy < 30) {
         newHappiness = (current.happiness - 2).clamp(0, 100);
-        print(
+        /*print(
           '[TamagotchiService] Happiness: ${current.happiness} -> $newHappiness (low stats penalty)',
-        );
+        );*/
       } else {
         newHappiness = (current.happiness - 1).clamp(0, 100);
-        print(
+        /*print(
           '[TamagotchiService] Happiness: ${current.happiness} -> $newHappiness',
-        );
+        );*/
       }
 
-      var newCleanliness = current.cleanliness;
+      // Check for poop event (5% chance per tick)
       if (_random.nextDouble() < 0.05) {
-        newCleanliness = (current.cleanliness - 15).clamp(0, 100);
-        print(
-          '[TamagotchiService] POOP EVENT! Cleanliness: ${current.cleanliness} -> $newCleanliness',
-        );
+        add(const PoopEvent());
+        return; // PoopEvent handler will update the state
       }
 
       final updated = current.copyWith(
         hunger: newHunger,
         energy: newEnergy,
         happiness: newHappiness,
-        cleanliness: newCleanliness,
         lastUpdateTime: DateTime.now(),
       );
       repository.saveTamagotchi(updated);
-      emit(HomeLoaded(tamagotchi: updated));
+      final currentState = state as HomeLoaded;
+      emit(currentState.copyWith(tamagotchi: updated));
     }
   }
 
@@ -364,6 +374,93 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _isSleeping = false;
         add(const WakeUp());
       }
+    }
+  }
+  
+  Future<void> _onPoopEvent(PoopEvent event, Emitter<HomeState> emit) async {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      final current = currentState.tamagotchi;
+
+      // Increment poop count and decrease cleanliness
+      final newPoopCount = current.poopCount + 1;
+      final updated = current.copyWith(
+        poopCount: newPoopCount,
+        cleanliness: (current.cleanliness - 15).clamp(0, 100),
+        lastUpdateTime: DateTime.now(),
+      );
+      await repository.saveTamagotchi(updated);
+      emit(currentState.copyWith(tamagotchi: updated));
+    }
+  }
+
+  Future<void> _onStartCleaning(
+    StartCleaning event,
+    Emitter<HomeState> emit,
+  ) async {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      if (currentState.tamagotchi.poopCount > 0) {
+        emit(currentState.copyWith(
+          isCleaningMode: true,
+          poopRubCounts: [0, 0, 0],
+        ));
+      }
+    }
+  }
+
+  Future<void> _onRubPoop(RubPoop event, Emitter<HomeState> emit) async {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      if (!currentState.isCleaningMode) return;
+
+      final poopIndex = event.poopIndex;
+      if (poopIndex >= currentState.tamagotchi.poopCount) return;
+
+      // Increment rub count for this poop
+      final newRubCounts = List<int>.from(currentState.poopRubCounts);
+      newRubCounts[poopIndex]++;
+
+      // If this poop has been rubbed 5 times, remove it
+      if (newRubCounts[poopIndex] >= 5) {
+        final current = currentState.tamagotchi;
+        final newPoopCount = current.poopCount - 1;
+        final updated = current.copyWith(
+          poopCount: newPoopCount,
+          cleanliness: (current.cleanliness + 10).clamp(0, 100),
+          lastUpdateTime: DateTime.now(),
+        );
+        await repository.saveTamagotchi(updated);
+
+        // Reset rub counts and check if we should exit cleaning mode
+        if (newPoopCount == 0) {
+          emit(HomeLoaded(
+            tamagotchi: updated,
+            isCleaningMode: false,
+            poopRubCounts: [0, 0, 0],
+          ));
+        } else {
+          emit(currentState.copyWith(
+            tamagotchi: updated,
+            poopRubCounts: [0, 0, 0],
+          ));
+        }
+      } else {
+        emit(currentState.copyWith(poopRubCounts: newRubCounts));
+      }
+    }
+  }
+
+  Future<void> _onExitCleaning(
+    ExitCleaning event,
+    Emitter<HomeState> emit,
+  ) async {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      emit(currentState.copyWith(
+        isCleaningMode: false,
+        poopRubCounts: [0, 0, 0],
+      ));
     }
   }
 }

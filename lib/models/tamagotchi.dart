@@ -11,6 +11,7 @@ class Tamagotchi {
   final int age; // creation date puis calculé ?
   final DateTime lastUpdateTime;
   final VisualState state;
+  final int poopCount; // Number of poops (max 3 visible)
 
   Tamagotchi({
     required this.name,
@@ -21,6 +22,7 @@ class Tamagotchi {
     required this.age,
     required this.lastUpdateTime,
     required this.state,
+    this.poopCount = 0,
   });
 
   Tamagotchi copyWith({
@@ -32,6 +34,7 @@ class Tamagotchi {
     int? age,
     DateTime? lastUpdateTime,
     VisualState? state,
+    int? poopCount,
   }) {
     return Tamagotchi(
       name: name ?? this.name,
@@ -42,6 +45,7 @@ class Tamagotchi {
       age: age ?? this.age,
       lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
       state: state ?? this.state,
+      poopCount: poopCount ?? this.poopCount,
     );
   }
 
@@ -54,6 +58,7 @@ class Tamagotchi {
     age: 0,
     lastUpdateTime: DateTime.now(),
     state: VisualState.idle,
+    poopCount: 0,
   );
 
   Map<String, dynamic> toJson() {
@@ -66,6 +71,7 @@ class Tamagotchi {
       'age': age,
       'lastUpdateTime': lastUpdateTime.toIso8601String(),
       'state': state.toString().split('.').last,
+      'poopCount': poopCount,
     };
   }
 
@@ -85,5 +91,6 @@ class Tamagotchi {
       orElse: () => VisualState.idle,
     )
         : VisualState.idle,
+    poopCount: (json['poopCount'] as num?)?.toInt() ?? 0,
   );
 }
