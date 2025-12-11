@@ -5,7 +5,7 @@ import 'package:tamagotchi_flutter/utils/lottie_preloader.dart';
 class SplashPage extends StatefulWidget {
   final Widget Function() nextPageBuilder;
 
-  const SplashPage({Key? key, required this.nextPageBuilder}) : super(key: key);
+  const SplashPage({super.key, required this.nextPageBuilder});
 
   @override
   State<SplashPage> createState() => _SplashPageState();

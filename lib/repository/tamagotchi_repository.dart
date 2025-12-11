@@ -33,12 +33,4 @@ class TamagotchiRepository {
     // store last saved timestamp (ms since epoch)
     // await prefs.setInt(_prefsTimeKey, DateTime.now().millisecondsSinceEpoch);
   }
-
-  /// Returns the DateTime when tamagotchi was last saved, or null if none.
-  Future<DateTime?> getLastSavedTime() async {
-    final prefs = await SharedPreferences.getInstance();
-    // final ms = prefs.getInt(_prefsTimeKey);
-    // if (ms == null) return null;
-    // return DateTime.fromMillisecondsSinceEpoch(ms);
-  }
 }

@@ -17,7 +17,7 @@ import '../../game/view/game_page.dart';
 import '../../achievements/view/achievements_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     PoopOverlay(
                                       poopCount: t.poopCount,
                                       isCleaningMode: state.isCleaningMode,
-                                      poopRubCounts: state.poopRubCounts,
+                                      globalRubCount: state.globalRubCount,
                                     ),
                                     // Exit cleaning mode button
                                     if (state.isCleaningMode)
@@ -313,11 +313,11 @@ class _AnimationSequencePlayer extends StatefulWidget {
   final VoidCallback? onSequenceComplete;
 
   const _AnimationSequencePlayer({
-    Key? key,
+    super.key,
     required this.animations,
     required this.width,
     this.onSequenceComplete,
-  }) : super(key: key);
+  });
 
   @override
   State<_AnimationSequencePlayer> createState() =>
@@ -340,12 +340,12 @@ class _AnimationSequencePlayerState extends State<_AnimationSequencePlayer>
     _setupAnimation();
   }
 
-  void _setupAnimation() {
-    final compo = LottiePreloader.getComposition(
+  Future<void> _setupAnimation() async {
+    final compo = await LottiePreloader.getComposition(
       ANIMATION_ASSET_PATH + _current.assetFileName,
     );
 
-    if (compo != null) {
+    if (compo != null && mounted) {
       _controller.duration = compo.duration;
       _isInitialized = true;
       // Start animation after frame is built
@@ -354,6 +354,7 @@ class _AnimationSequencePlayerState extends State<_AnimationSequencePlayer>
           _controller.forward();
         }
       });
+      if (mounted) setState(() {});
     }
   }
 
@@ -385,7 +386,7 @@ class _AnimationSequencePlayerState extends State<_AnimationSequencePlayer>
 
   @override
   Widget build(BuildContext context) {
-    final compo = LottiePreloader.getComposition(
+    final compo = LottiePreloader.getCompositionSync(
       ANIMATION_ASSET_PATH + _current.assetFileName,
     );
 

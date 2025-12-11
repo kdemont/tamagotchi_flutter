@@ -12,26 +12,26 @@ class HomeInitial extends HomeState {}
 class HomeLoaded extends HomeState {
   final Tamagotchi tamagotchi;
   final bool isCleaningMode;
-  final List<int> poopRubCounts; // Rub counts for each of the 3 poop positions
+  final int globalRubCount; // Global rub count for sequential poop removal
 
   const HomeLoaded({
     required this.tamagotchi,
     this.isCleaningMode = false,
-    this.poopRubCounts = const [0, 0, 0],
+    this.globalRubCount = 0,
   });
 
   @override
-  List<Object?> get props => [tamagotchi, isCleaningMode, poopRubCounts];
+  List<Object?> get props => [tamagotchi, isCleaningMode, globalRubCount];
 
   HomeLoaded copyWith({
     Tamagotchi? tamagotchi,
     bool? isCleaningMode,
-    List<int>? poopRubCounts,
+    int? globalRubCount,
   }) {
     return HomeLoaded(
       tamagotchi: tamagotchi ?? this.tamagotchi,
       isCleaningMode: isCleaningMode ?? this.isCleaningMode,
-      poopRubCounts: poopRubCounts ?? this.poopRubCounts,
+      globalRubCount: globalRubCount ?? this.globalRubCount,
     );
   }
 }

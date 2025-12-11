@@ -74,26 +74,28 @@ class _GamePlayingViewState extends State<GamePlayingView> {
                 ),
               ),
             ),
-            // Tamagotchi image
-            Image.asset(
-              'assets/images/tamagotchi.png',
-              width: 150,
-              height: 150,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade300,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.pets,
-                    size: 75,
-                    color: Colors.white,
-                  ),
-                );
-              },
+            // Tamagotchi image - flexible
+            Flexible(
+              child: Image.asset(
+                'assets/images/tamagotchi.png',
+                width: 150,
+                height: 150,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade300,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.pets,
+                      size: 75,
+                      color: Colors.white,
+                    ),
+                  );
+                },
+              ),
             ),
             const SizedBox(height: 8),
             // Hint box
@@ -126,7 +128,7 @@ class _GamePlayingViewState extends State<GamePlayingView> {
                     )
                   : const SizedBox.shrink(),
             ),
-            const Spacer(),
+            const SizedBox(height: 8),
             // Input display
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -155,6 +157,7 @@ class _GamePlayingViewState extends State<GamePlayingView> {
               ),
               padding: const EdgeInsets.all(12),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildNumpadRow(['1', '2', '3']),
                   const SizedBox(height: 6),

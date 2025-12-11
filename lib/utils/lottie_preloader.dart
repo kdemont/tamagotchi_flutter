@@ -1,63 +1,79 @@
 import 'package:flutter/cupertino.dart';
 import 'package:lottie/lottie.dart';
 
-import '../models/visual_state.dart';
 import 'constants.dart';
 
 
-// Transformer en singleton si besoin plus tard ?
+/// Lazy-loading Lottie animation manager with LRU cache to prevent memory overflow.
+/// Only preloads the idle animation, then loads others on-demand.
 class LottiePreloader {
   static final Map<String, LottieComposition> _cache = {};
+  static final List<String> _accessOrder = [];
+  static const int _maxCacheSize = 4; // Keep max 4 animations in memory
 
-  static Future<void> preloadAll() async {
-    final List<String> allAssets = [];
-    for (final state in VisualState.values) {
-      for (final anim in state.animations) {
-        allAssets.add(anim.assetFileName);
-      }
+  /// Preload only essential animations (idle state) during splash
+  static Future<void> preloadEssential() async {
+    final essentialAnimations = [
+      'cuddle.json', // idle animation
+    ];
+
+    for (final fileName in essentialAnimations) {
+      await _loadAnimation(ANIMATION_ASSET_PATH + fileName);
     }
 
-    await Future.wait(
-        allAssets.map((path) => _preloadAnimation(ANIMATION_ASSET_PATH + path))
-    );
+    debugPrint('[LottiePreloader] Essential animations preloaded');
   }
 
+  /// Legacy method with progress - now only preloads essential animations
   static Future<void> preloadAllWithProgress(
       void Function(double progress, String assetName)? onProgress,
       ) async {
-
-    final List<String> allAssets = [];
-    for (final state in VisualState.values) {
-      for (final anim in state.animations) {
-        allAssets.add(anim.assetFileName);
-      }
-    }
-
-    print(
-      '[LottieCache] Preloading ${allAssets.length} animations: $allAssets',
-    );
-
-    for (int i = 0; i < allAssets.length; i++) {
-      final fileName = allAssets[i];
-      onProgress?.call(i / allAssets.length, fileName);
-      await _preloadAnimation(ANIMATION_ASSET_PATH + fileName);
-    }
-
+    onProgress?.call(0.0, 'Loading essential animations...');
+    await preloadEssential();
     onProgress?.call(1.0, 'Complete');
-    print(
-      '[LottieCache] Preload complete. Cache keys: ${_cache.keys.toList()}',
-    );
   }
 
-  static Future<void> _preloadAnimation(String path) async {
+  /// Load an animation into cache with LRU eviction
+  static Future<void> _loadAnimation(String path) async {
     if (!_cache.containsKey(path)) {
+      // Evict least recently used if cache is full
+      if (_cache.length >= _maxCacheSize) {
+        final lruKey = _accessOrder.first;
+        _accessOrder.removeAt(0);
+        _cache.remove(lruKey);
+        debugPrint('[LottiePreloader] Evicted LRU: $lruKey');
+      }
+
       final composition = await AssetLottie(path).load();
       _cache[path] = composition;
-      debugPrint('[LottiePreloader] Preloaded: $path' );
+      _accessOrder.add(path);
+      debugPrint('[LottiePreloader] Loaded: $path (cache: ${_cache.length}/$_maxCacheSize)');
+    } else {
+      // Move to end of access order (most recently used)
+      _accessOrder.remove(path);
+      _accessOrder.add(path);
     }
   }
 
-  static LottieComposition? getComposition(String path) {
+  /// Get composition, loading it on-demand if not cached
+  static Future<LottieComposition?> getComposition(String path) async {
+    if (!_cache.containsKey(path)) {
+      await _loadAnimation(path);
+    } else {
+      // Update access order
+      _accessOrder.remove(path);
+      _accessOrder.add(path);
+    }
+    return _cache[path];
+  }
+
+  /// Get composition synchronously (returns null if not loaded)
+  static LottieComposition? getCompositionSync(String path) {
+    if (_cache.containsKey(path)) {
+      // Update access order
+      _accessOrder.remove(path);
+      _accessOrder.add(path);
+    }
     return _cache[path];
   }
 }
