@@ -1,4 +1,6 @@
 PODS:
+  - ambient_light (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
   - sensors_plus (0.0.1):
     - Flutter
@@ -7,11 +9,14 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - ambient_light (from `.symlinks/plugins/ambient_light/ios`)
   - Flutter (from `Flutter`)
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
 
 EXTERNAL SOURCES:
+  ambient_light:
+    :path: ".symlinks/plugins/ambient_light/ios"
   Flutter:
     :path: Flutter
   sensors_plus:
@@ -20,6 +25,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
+  ambient_light: 4257c4811ce099c08f60ac036edd942d46fb2444
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   sensors_plus: 6a11ed0c2e1d0bd0b20b4029d3bad27d96e0c65b
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7

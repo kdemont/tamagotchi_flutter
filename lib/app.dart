@@ -6,7 +6,7 @@ import 'home/view/home_page.dart';
 import 'splash/splash_page.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp(map, {Key? key}) : super(key: key);
+  const MyApp(map, {super.key});
 
   @override
   Widget build(BuildContext context) {
