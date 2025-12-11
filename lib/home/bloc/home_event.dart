@@ -56,14 +56,13 @@ class StartCleaning extends HomeEvent {
 }
 
 class RubPoop extends HomeEvent {
-  final int poopIndex; // 0, 1, or 2 for the three positions
-
-  const RubPoop(this.poopIndex);
-
-  @override
-  List<Object?> get props => [poopIndex];
+  const RubPoop();
 }
 
 class ExitCleaning extends HomeEvent {
   const ExitCleaning();
+}
+
+class ResetPoopCount extends HomeEvent {
+  const ResetPoopCount();
 }
