@@ -77,7 +77,7 @@ class _GamePlayingViewState extends State<GamePlayingView> {
             // Tamagotchi image - flexible
             Flexible(
               child: Image.asset(
-                'assets/images/tamagotchi.png',
+                'assets/images/tamagotchi_base.png',
                 width: 150,
                 height: 150,
                 errorBuilder: (context, error, stackTrace) {

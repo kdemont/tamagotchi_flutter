@@ -42,7 +42,7 @@ class GameLostView extends StatelessWidget {
               // Tamagotchi image
               Center(
                 child: Image.asset(
-                  'assets/images/tamagotchi.png',
+                  'assets/images/tamagotchi_sad.png',
                   width: 200,
                   height: 200,
                   errorBuilder: (context, error, stackTrace) {
