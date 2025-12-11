@@ -106,6 +106,44 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Step counter and settings in top right
+                              // Step counter in top right
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.8),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: const Color(0xFF9B7C47),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.directions_walk,
+                                        color: Color(0xFF9B7C47),
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${state.currentSteps}',
+                                        style: const TextStyle(
+                                          color: Color(0xFF654B1F),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
                               // Stats in a 2-column grid (two per row)
                               GridView.count(
                                 crossAxisCount: 2,

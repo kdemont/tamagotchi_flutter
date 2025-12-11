@@ -86,6 +86,22 @@ class TamagotchiConfig {
   static const int cleanCleanlinessGain = 40;
 
   // ============================================================================
+  // WALK / PEDOMETER SETTINGS
+  // ============================================================================
+
+  /// Number of steps required to complete one walk
+  static const int stepsPerWalk = 1000;
+
+  /// Energy gained per completed walk
+  static const int walkEnergyGain = 10;
+
+  /// Happiness gained per completed walk
+  static const int walkHappinessGain = 15;
+
+  /// Energy lost (fatigue) per completed walk
+  static const int walkEnergyLoss = 5;
+
+  // ============================================================================
   // DETECTION THRESHOLDS
   // ============================================================================
 

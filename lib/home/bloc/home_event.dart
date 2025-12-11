@@ -66,3 +66,12 @@ class ExitCleaning extends HomeEvent {
 class ResetPoopCount extends HomeEvent {
   const ResetPoopCount();
 }
+
+class UpdateSteps extends HomeEvent {
+  final int stepCount;
+
+  const UpdateSteps(this.stepCount);
+
+  @override
+  List<Object?> get props => [stepCount];
+}

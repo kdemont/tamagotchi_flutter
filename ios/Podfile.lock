@@ -2,6 +2,8 @@ PODS:
   - ambient_light (0.0.1):
     - Flutter
   - Flutter (1.0.0)
+  - pedometer (0.0.1):
+    - Flutter
   - sensors_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -11,6 +13,7 @@ PODS:
 DEPENDENCIES:
   - ambient_light (from `.symlinks/plugins/ambient_light/ios`)
   - Flutter (from `Flutter`)
+  - pedometer (from `.symlinks/plugins/pedometer/ios`)
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
 
@@ -19,6 +22,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/ambient_light/ios"
   Flutter:
     :path: Flutter
+  pedometer:
+    :path: ".symlinks/plugins/pedometer/ios"
   sensors_plus:
     :path: ".symlinks/plugins/sensors_plus/ios"
   shared_preferences_foundation:
@@ -27,6 +32,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   ambient_light: 4257c4811ce099c08f60ac036edd942d46fb2444
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  pedometer: 1c5eaab0c6bce8eb7651f7095553b5081c9d06ed
   sensors_plus: 6a11ed0c2e1d0bd0b20b4029d3bad27d96e0c65b
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
 

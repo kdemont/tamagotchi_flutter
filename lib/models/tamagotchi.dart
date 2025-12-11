@@ -12,6 +12,9 @@ class Tamagotchi {
   final DateTime lastUpdateTime;
   final VisualState state;
   final int poopCount; // Number of poops (max 3 visible)
+  final int lastStepCount; // Last recorded step count
+  final DateTime? lastWalkDate; // Date of last step count check
+  final int totalWalks; // Total number of completed walks
 
   Tamagotchi({
     required this.name,
@@ -23,6 +26,9 @@ class Tamagotchi {
     required this.lastUpdateTime,
     required this.state,
     this.poopCount = 0,
+    this.lastStepCount = 0,
+    this.lastWalkDate,
+    this.totalWalks = 0,
   });
 
   Tamagotchi copyWith({
@@ -35,6 +41,9 @@ class Tamagotchi {
     DateTime? lastUpdateTime,
     VisualState? state,
     int? poopCount,
+    int? lastStepCount,
+    DateTime? lastWalkDate,
+    int? totalWalks,
   }) {
     return Tamagotchi(
       name: name ?? this.name,
@@ -46,6 +55,9 @@ class Tamagotchi {
       lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
       state: state ?? this.state,
       poopCount: poopCount ?? this.poopCount,
+      lastStepCount: lastStepCount ?? this.lastStepCount,
+      lastWalkDate: lastWalkDate ?? this.lastWalkDate,
+      totalWalks: totalWalks ?? this.totalWalks,
     );
   }
 
@@ -59,6 +71,9 @@ class Tamagotchi {
     lastUpdateTime: DateTime.now(),
     state: VisualState.idle,
     poopCount: 0,
+    lastStepCount: 0,
+    lastWalkDate: DateTime.now(),
+    totalWalks: 0,
   );
 
   Map<String, dynamic> toJson() {
@@ -72,6 +87,9 @@ class Tamagotchi {
       'lastUpdateTime': lastUpdateTime.toIso8601String(),
       'state': state.toString().split('.').last,
       'poopCount': poopCount,
+      'lastStepCount': lastStepCount,
+      'lastWalkDate': lastWalkDate?.toIso8601String(),
+      'totalWalks': totalWalks,
     };
   }
 
@@ -92,5 +110,10 @@ class Tamagotchi {
     )
         : VisualState.idle,
     poopCount: (json['poopCount'] as num?)?.toInt() ?? 0,
+    lastStepCount: (json['lastStepCount'] as num?)?.toInt() ?? 0,
+    lastWalkDate: json['lastWalkDate'] != null
+        ? DateTime.parse(json['lastWalkDate'] as String)
+        : null,
+    totalWalks: (json['totalWalks'] as num?)?.toInt() ?? 0,
   );
 }

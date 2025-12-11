@@ -41,6 +41,7 @@ dependencies:
   sensors_plus: ^7.0.0
   ambient_light: ^0.1.4
   flutter_svg: ^2.0.10+1
+  pedometer: ^4.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
