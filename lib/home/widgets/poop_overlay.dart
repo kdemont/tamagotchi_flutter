@@ -57,9 +57,9 @@ class _PoopOverlayState extends State<PoopOverlay> {
   Widget build(BuildContext context) {
     if (widget.poopCount == 0) return const SizedBox.shrink();
 
-    // Three positions for poops based on wireframe
+    // Three positions for poops at the bottom
     // Position 0: Bottom left
-    // Position 1: Bottom center-left
+    // Position 1: Bottom center
     // Position 2: Bottom right
 
     Widget poopsStack = Stack(
@@ -68,21 +68,22 @@ class _PoopOverlayState extends State<PoopOverlay> {
         if (widget.poopCount >= 1)
           Positioned(
             left: 50,
-            bottom: 180,
+            bottom: 20,
             child: _PoopWidget(index: 0),
           ),
-        // Position 1 - Bottom Center-Right (bigger stack)
+        // Position 1 - Bottom Center
         if (widget.poopCount >= 2)
           Positioned(
-            left: 140,
-            bottom: 140,
-            child: _PoopWidget(index: 1),
+            left: 0,
+            right: 0,
+            bottom: 30,
+            child: Center(child: _PoopWidget(index: 1)),
           ),
         // Position 2 - Bottom Right
         if (widget.poopCount >= 3)
           Positioned(
             right: 50,
-            bottom: 160,
+            bottom: 20,
             child: _PoopWidget(index: 2),
           ),
       ],
