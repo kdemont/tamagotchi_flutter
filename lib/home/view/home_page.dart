@@ -12,6 +12,7 @@ import '../bloc/home_bloc.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/stat_bar.dart';
 import '../widgets/poop_overlay.dart';
+import '../widgets/pet_detector.dart';
 import '../../shared/widgets/bottom_nav_bar.dart';
 import '../../game/view/game_page.dart';
 import '../../achievements/view/achievements_page.dart';
@@ -202,14 +203,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                 child: Stack(
                                   children: [
                                     // Tamagotchi animation (hidden in cleaning mode)
+                                    // Wrapped in PetDetector for petting interaction
                                     if (!state.isCleaningMode)
-                                      Center(
-                                        child: _AnimationSequencePlayer(
-                                          key: ValueKey(t.state),
-                                          animations: t.state.animations,
-                                          width: MediaQuery.of(context).size.width *
-                                              0.6,
-                                          onSequenceComplete: () => viewModel.nonRepeatingEventComplete(),
+                                      PetDetector(
+                                        enabled: t.state == VisualState.idle,
+                                        child: Center(
+                                          child: _AnimationSequencePlayer(
+                                            key: ValueKey(t.state),
+                                            animations: t.state.animations,
+                                            width: MediaQuery.of(context).size.width *
+                                                0.6,
+                                            onSequenceComplete: () => viewModel.nonRepeatingEventComplete(),
+                                          ),
                                         ),
                                       ),
                                     // "Frotte !" text in cleaning mode

@@ -75,3 +75,7 @@ class UpdateSteps extends HomeEvent {
   @override
   List<Object?> get props => [stepCount];
 }
+
+class Pet extends HomeEvent {
+  const Pet();
+}

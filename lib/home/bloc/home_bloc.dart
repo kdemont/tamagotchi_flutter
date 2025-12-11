@@ -121,6 +121,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<ExitCleaning>(_onExitCleaning);
     on<ResetPoopCount>(_onResetPoopCount);
     on<UpdateSteps>(_onUpdateSteps);
+    on<Pet>(_onPet);
     _startTicker();
     startLightSensor(); // Start listening to light sensor
     startPedometer(); // Start listening to step counter
@@ -614,5 +615,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         currentSteps: event.stepCount,
       ));
     }
+  }
+
+  void _onPet(Pet event, Emitter<HomeState> emit) {
+    if (state is! HomeLoaded) return;
+
+    final currentState = state as HomeLoaded;
+    final current = currentState.tamagotchi;
+
+    // Only allow petting in idle state
+    if (current.state != VisualState.idle) return;
+
+    final updated = current.copyWith(
+      happiness: TamagotchiConfig.clampStat(
+        current.happiness + TamagotchiConfig.petHappinessGain,
+      ),
+      lastUpdateTime: DateTime.now(),
+    );
+
+    repository.saveTamagotchi(updated);
+    emit(currentState.copyWith(tamagotchi: updated));
   }
 }

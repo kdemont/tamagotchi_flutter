@@ -86,6 +86,16 @@ class TamagotchiConfig {
   static const int cleanCleanlinessGain = 40;
 
   // ============================================================================
+  // PETTING SETTINGS
+  // ============================================================================
+
+  /// Number of rubs required to trigger petting bonus
+  static const int rubsForPet = 5;
+
+  /// Happiness gain when petting
+  static const int petHappinessGain = 10;
+
+  // ============================================================================
   // WALK / PEDOMETER SETTINGS
   // ============================================================================
 
