@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // removed unused imports
 
 import 'package:lottie/lottie.dart';
+import 'package:tamagotchi_flutter/config/tamagotchi_config.dart';
 import 'package:tamagotchi_flutter/gen/strings.g.dart';
 import 'package:tamagotchi_flutter/utils/lottie_preloader.dart';
 // visual state info accessed through model; explicit import removed
 
-import '../../utils/constants.dart';
 import '../../models/visual_state.dart';
 import '../bloc/home_bloc.dart';
 import '../view_model/home_view_model.dart';
@@ -401,7 +401,7 @@ class _AnimationSequencePlayerState extends State<_AnimationSequencePlayer>
 
   Future<void> _setupAnimation() async {
     final compo = await LottiePreloader.getComposition(
-      ANIMATION_ASSET_PATH + _current.assetFileName,
+      TamagotchiConfig.animationsPath + _current.assetFileName,
     );
 
     if (compo != null && mounted) {
@@ -446,7 +446,7 @@ class _AnimationSequencePlayerState extends State<_AnimationSequencePlayer>
   @override
   Widget build(BuildContext context) {
     final compo = LottiePreloader.getCompositionSync(
-      ANIMATION_ASSET_PATH + _current.assetFileName,
+      TamagotchiConfig.animationsPath + _current.assetFileName,
     );
 
     if (compo == null) {

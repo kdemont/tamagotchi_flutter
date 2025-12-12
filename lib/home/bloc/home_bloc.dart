@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
@@ -11,13 +12,13 @@ import '../../config/tamagotchi_config.dart';
 import '../../models/tamagotchi.dart';
 import '../../models/visual_state.dart';
 import '../../repository/tamagotchi_repository.dart';
-import '../../utils/constants.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final TamagotchiRepository repository;
+
   // Interval between ticks from config
   static final Duration tickInterval = Duration(
     seconds: TamagotchiConfig.tickIntervalSeconds,
@@ -42,8 +43,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AmbientLight _ambientLight = AmbientLight(frontCamera: true);
   StreamSubscription<double>? _lightSub;
 
-  static const double lightThreshold = 50; // lux threshold for darkness (camera-based sensor)
-  // pour IOS
+  // Light threshold from config based on platform
+  final double lightThreshold =
+      Platform.isIOS
+          ? TamagotchiConfig.lightThresholdIOS
+          : TamagotchiConfig.lightThresholdAndroid;
+
   bool? _isSleeping; // prevent multiple sleep triggers
 
   void startAccelerometer() {
@@ -70,7 +75,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           print('[HomeBloc] Light sensor stream closed');
         },
       );
-      print('[HomeBloc] Light sensor started successfully - waiting for data...');
+      print(
+        '[HomeBloc] Light sensor started successfully - waiting for data...',
+      );
     } catch (e) {
       print('[HomeBloc] Light sensor not available: $e');
     }
@@ -103,6 +110,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Timer? _ticker;
+
   // optional counter for batching saves (unused for now)
   // int _unsavedTickCounter = 0;
   HomeBloc({required this.repository}) : super(HomeInitial()) {
@@ -151,15 +159,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     var updatedTama = tama;
     if (tama.lastWalkDate != null) {
       final lastDate = tama.lastWalkDate!;
-      final isSameDay = now.year == lastDate.year &&
+      final isSameDay =
+          now.year == lastDate.year &&
           now.month == lastDate.month &&
           now.day == lastDate.day;
       if (!isSameDay) {
         // Reset step count for new day
-        updatedTama = tama.copyWith(
-          lastStepCount: 0,
-          lastWalkDate: now,
-        );
+        updatedTama = tama.copyWith(lastStepCount: 0, lastWalkDate: now);
         await repository.saveTamagotchi(updatedTama);
       }
     }
@@ -176,10 +182,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           updatedTama.energy - (ticks * TamagotchiConfig.energyDecayPerTick),
         ),
         happiness: TamagotchiConfig.clampStat(
-          updatedTama.happiness - (ticks * TamagotchiConfig.happinessDecayPerTick),
+          updatedTama.happiness -
+              (ticks * TamagotchiConfig.happinessDecayPerTick),
         ),
         cleanliness: TamagotchiConfig.clampStat(
-          updatedTama.cleanliness - (ticks * TamagotchiConfig.cleanlinessDecayPerTick),
+          updatedTama.cleanliness -
+              (ticks * TamagotchiConfig.cleanlinessDecayPerTick),
         ),
         lastUpdateTime: now,
       );
@@ -188,18 +196,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       if (updated.state == VisualState.liceAttack) {
         startAccelerometer();
       }
-      emit(HomeLoaded(
-        tamagotchi: updated,
-        currentSteps: updated.lastStepCount,
-      ));
+      emit(
+        HomeLoaded(tamagotchi: updated, currentSteps: updated.lastStepCount),
+      );
       return;
     }
 
     // Emit loaded tama and start accelerometer if needed
-    emit(HomeLoaded(
-      tamagotchi: updatedTama,
-      currentSteps: updatedTama.lastStepCount,
-    ));
+    emit(
+      HomeLoaded(
+        tamagotchi: updatedTama,
+        currentSteps: updatedTama.lastStepCount,
+      ),
+    );
     if (updatedTama.state == VisualState.liceAttack) {
       startAccelerometer();
     }
@@ -396,10 +405,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
 
       // Use different happiness decay rates based on stress
-      final int happinessDecay = (current.hunger < TamagotchiConfig.cryingThreshold ||
-              current.energy < TamagotchiConfig.cryingThreshold)
-          ? TamagotchiConfig.happinessDecayPerTickStressed
-          : TamagotchiConfig.happinessDecayPerTick;
+      final int happinessDecay =
+          (current.hunger < TamagotchiConfig.cryingThreshold ||
+                  current.energy < TamagotchiConfig.cryingThreshold)
+              ? TamagotchiConfig.happinessDecayPerTickStressed
+              : TamagotchiConfig.happinessDecayPerTick;
       final newHappiness = TamagotchiConfig.clampStat(
         current.happiness - happinessDecay,
       );
@@ -422,7 +432,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   void _onAccel(AccelerometerEvent e) {
-    final g = sqrt(e.x * e.x + e.y * e.y + e.z * e.z) / GRAVITY_EARTH;
+    final g = sqrt(e.x * e.x + e.y * e.y + e.z * e.z) / TamagotchiConfig.gravity;
     if (g > gThreshold) {
       final now = DateTime.now().millisecondsSinceEpoch;
       _timestamps.add(now);
@@ -442,7 +452,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final current = (state as HomeLoaded).tamagotchi;
 
       // Log light level continuously
-      print('[💡 Light] ${lux.toStringAsFixed(1)} lux ${lux < lightThreshold ? "🌙 DARK" : "☀️ BRIGHT"}');
+      print(
+        '[💡 Light] ${lux.toStringAsFixed(1)} lux ${lux < lightThreshold ? "🌙 DARK" : "☀️ BRIGHT"}',
+      );
 
       _isSleeping ??= lux < lightThreshold;
 
@@ -461,7 +473,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     }
   }
-  
+
   Future<void> _onPoopEvent(PoopEvent event, Emitter<HomeState> emit) async {
     if (state is HomeLoaded) {
       final currentState = state as HomeLoaded;
@@ -493,10 +505,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (state is HomeLoaded) {
       final currentState = state as HomeLoaded;
       if (currentState.tamagotchi.poopCount > 0) {
-        emit(currentState.copyWith(
-          isCleaningMode: true,
-          globalRubCount: 0,
-        ));
+        emit(currentState.copyWith(isCleaningMode: true, globalRubCount: 0));
       }
     }
   }
@@ -523,16 +532,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         // Reset rub count and check if we should exit cleaning mode
         if (newPoopCount == 0) {
-          emit(currentState.copyWith(
-            tamagotchi: updated,
-            isCleaningMode: false,
-            globalRubCount: 0,
-          ));
+          emit(
+            currentState.copyWith(
+              tamagotchi: updated,
+              isCleaningMode: false,
+              globalRubCount: 0,
+            ),
+          );
         } else {
-          emit(currentState.copyWith(
-            tamagotchi: updated,
-            globalRubCount: 0, // Reset count for next poop
-          ));
+          emit(
+            currentState.copyWith(
+              tamagotchi: updated,
+              globalRubCount: 0, // Reset count for next poop
+            ),
+          );
         }
       } else {
         emit(currentState.copyWith(globalRubCount: newRubCount));
@@ -546,10 +559,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     if (state is HomeLoaded) {
       final currentState = state as HomeLoaded;
-      emit(currentState.copyWith(
-        isCleaningMode: false,
-        globalRubCount: 0,
-      ));
+      emit(currentState.copyWith(isCleaningMode: false, globalRubCount: 0));
     }
   }
 
@@ -584,15 +594,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     // Check if we completed any walks
     if (stepsSinceLastUpdate >= TamagotchiConfig.stepsPerWalk) {
-      final completedWalks = stepsSinceLastUpdate ~/ TamagotchiConfig.stepsPerWalk;
+      final completedWalks =
+          stepsSinceLastUpdate ~/ TamagotchiConfig.stepsPerWalk;
 
       // Apply walk bonuses
       final updated = current.copyWith(
         energy: TamagotchiConfig.clampStat(
-          current.energy + (completedWalks * TamagotchiConfig.walkEnergyGain) - (completedWalks * TamagotchiConfig.walkEnergyLoss),
+          current.energy +
+              (completedWalks * TamagotchiConfig.walkEnergyGain) -
+              (completedWalks * TamagotchiConfig.walkEnergyLoss),
         ),
         happiness: TamagotchiConfig.clampStat(
-          current.happiness + (completedWalks * TamagotchiConfig.walkHappinessGain),
+          current.happiness +
+              (completedWalks * TamagotchiConfig.walkHappinessGain),
         ),
         lastStepCount: event.stepCount,
         lastWalkDate: DateTime.now(),
@@ -601,10 +615,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
 
       await repository.saveTamagotchi(updated);
-      emit(currentState.copyWith(
-        tamagotchi: updated,
-        currentSteps: event.stepCount,
-      ));
+      emit(
+        currentState.copyWith(
+          tamagotchi: updated,
+          currentSteps: event.stepCount,
+        ),
+      );
     } else {
       // Just update the step count without applying bonuses
       final updated = current.copyWith(
@@ -612,10 +628,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         lastWalkDate: DateTime.now(),
       );
       await repository.saveTamagotchi(updated);
-      emit(currentState.copyWith(
-        tamagotchi: updated,
-        currentSteps: event.stepCount,
-      ));
+      emit(
+        currentState.copyWith(
+          tamagotchi: updated,
+          currentSteps: event.stepCount,
+        ),
+      );
     }
   }
 

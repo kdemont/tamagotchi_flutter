@@ -2,6 +2,12 @@ class TamagotchiConfig {
   TamagotchiConfig._();
 
   // ============================================================================
+  // ASSET PATHS
+  // ============================================================================
+
+  static const String animationsPath = 'assets/animations/';
+
+  // ============================================================================
   // VISUAL STATE PRIORITIES
   // ============================================================================
 
@@ -115,6 +121,8 @@ class TamagotchiConfig {
   // DETECTION THRESHOLDS
   // ============================================================================
 
+  static const double gravity = 9.80665; // in m/s²
+
   /// Accelerometer threshold to detect a shake (in g)
   static const double shakeThreshold = 2.5;
 
@@ -123,6 +131,14 @@ class TamagotchiConfig {
 
   /// Time window to count shakes (in seconds)
   static const int shakeTimeWindow = 3;
+
+  // ============================================================================
+  // LIGHT SENSOR THRESHOLDS
+  // ============================================================================
+
+  /// Light threshold to detect darkness (in lux)
+  static const double lightThresholdAndroid = 50;  // lux threshold for darkness (camera-based sensor)
+  static const double lightThresholdIOS = 1;  // lux threshold for darkness (camera-based sensor)
 
   // ============================================================================
   // STAT LIMITS
