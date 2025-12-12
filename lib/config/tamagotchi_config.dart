@@ -17,7 +17,7 @@ class TamagotchiConfig {
     'crying': 2,
     'eating': 3,
     'cleaning': 3,
-    'sleeping': 4,
+    'sleeping': 3,
     'liceAttack': 5,
   };
 
@@ -166,7 +166,7 @@ class TamagotchiConfig {
   static bool canInterrupt(String currentState, String newState) {
     final currentPriority = getPriority(currentState);
     final newPriority = getPriority(newState);
-    return newPriority >= currentPriority;
+    return newPriority > currentPriority;
   }
 
   /// Clamps a stat value between min and max

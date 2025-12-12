@@ -452,9 +452,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final current = (state as HomeLoaded).tamagotchi;
 
       // Log light level continuously
-      print(
-        '[💡 Light] ${lux.toStringAsFixed(1)} lux ${lux < lightThreshold ? "🌙 DARK" : "☀️ BRIGHT"}',
-      );
+      // print(
+      //   '[💡 Light] ${lux.toStringAsFixed(1)} lux ${lux < lightThreshold ? "🌙 DARK" : "☀️ BRIGHT"}',
+      // );
 
       _isSleeping ??= lux < lightThreshold;
 
