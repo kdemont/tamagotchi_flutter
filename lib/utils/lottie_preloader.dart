@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:lottie/lottie.dart';
-
-import 'constants.dart';
-
+import 'package:tamagotchi_flutter/config/tamagotchi_config.dart';
 
 /// Lazy-loading Lottie animation manager with LRU cache to prevent memory overflow.
 /// Only preloads the idle animation, then loads others on-demand.
@@ -18,7 +16,7 @@ class LottiePreloader {
     ];
 
     for (final fileName in essentialAnimations) {
-      await _loadAnimation(ANIMATION_ASSET_PATH + fileName);
+      await _loadAnimation(TamagotchiConfig.animationsPath + fileName);
     }
 
     debugPrint('[LottiePreloader] Essential animations preloaded');

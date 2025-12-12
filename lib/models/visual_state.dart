@@ -4,7 +4,7 @@ enum VisualState {
   idle([VisualAnimation('cuddle.json', true)]),
   //yawning([VisualAnimation('yawning.json', false)]),
   // hungry([VisualAnimation('hungry.json', false)]),
-  //happy([VisualAnimation('happy_bouncing.json', false)]),
+  happy([VisualAnimation('happy_bouncing.json', false)]),
   crying([VisualAnimation('crying.json', false)]),
   eating([VisualAnimation('eating.json', false)]),
   cleaning([VisualAnimation('cleaning.json', false)]),
