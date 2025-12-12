@@ -1,3 +1,2 @@
-= Content
-== Subcontent
+= Introduction
 #lorem(50)

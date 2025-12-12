@@ -29,7 +29,7 @@
       #grid(
         columns: (1fr, 1fr),
         align: (left, right),
-        [#datetime.today().display()],
+        [#datetime.today().display("[day].[month].[year]")],
         counter(page).display("1")
       )
     ]
@@ -40,7 +40,7 @@
 #set text(
   font: "New Computer Modern",
   size: 11pt,
-  lang: "en",
+  lang: "fr",
 )
 
 #set par(
@@ -82,4 +82,18 @@
 #pagebreak()
 
 // Corps du rapport
+#include "sections/abstract.typ"
+#pagebreak()
+#outline()
+#pagebreak()
 #include "sections/introduction.typ"
+#pagebreak()
+#include "sections/ux.typ"
+#pagebreak()
+#include "sections/evaluations.typ"
+#pagebreak()
+#include "sections/technique.typ"
+#pagebreak()
+#include "sections/bibliographie.typ"
+#pagebreak()
+#include "sections/annexes.typ"
