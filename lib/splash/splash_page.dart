@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tamagotchi_flutter/gen/strings.g.dart';
 import 'package:tamagotchi_flutter/utils/lottie_preloader.dart';
 
 /// Splash screen that preloads all Lottie animations before navigating to home.
@@ -25,10 +26,7 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _preloadAnimations() async {
     try {
       //      await MyLottieCache.instance.preloadAllWithProgress((
-      await LottiePreloader.preloadAllWithProgress((
-        progress,
-        assetName,
-      ) {
+      await LottiePreloader.preloadAllWithProgress((progress, assetName) {
         if (mounted) {
           setState(() {
             _progress = progress;
@@ -69,7 +67,7 @@ class _SplashPageState extends State<SplashPage> {
 
                 // Title
                 Text(
-                  'Tamagotchi',
+                  t.appName,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: const Color(0xFF654B1F),
                     fontWeight: FontWeight.bold,
@@ -94,8 +92,8 @@ class _SplashPageState extends State<SplashPage> {
                 // Progress text
                 Text(
                   _isLoading
-                      ? 'Chargement... ${(_progress * 100).toInt()}%'
-                      : 'Prêt !',
+                      ? t.splash.loading(progress: (_progress * 100).toInt())
+                      : t.splash.ready,
                   style: const TextStyle(
                     color: Color(0xFF654B1F),
                     fontSize: 16,

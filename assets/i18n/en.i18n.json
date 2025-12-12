@@ -1,0 +1,51 @@
+{
+  "appName": "Tamagotchi",
+  "splash": {
+    "loading": "Loading... $progress%",
+    "ready": "Ready!"
+  },
+  "home": {
+    "stats": {
+      "hunger": "HUNGER",
+      "energy": "ENERGY",
+      "happiness": "HAPPINESS",
+      "hygiene": "HYGIENE"
+    },
+    "age": "Age: $age",
+    "cleaning": {
+      "instruction": "Rub!",
+      "exit": "Exit"
+    }
+  },
+  "nav": {
+    "game": "GAME",
+    "home": "HOME",
+    "achievements": "ACHIEVEMENTS"
+  },
+  "achievements": {
+    "title": "Achievements",
+    "placeholder": "Achievements page - to implement"
+  },
+  "game": {
+    "rules": {
+      "title": "$name wants to play!",
+      "description": "$name will make you guess a number between 1 and 100 by giving you hints.",
+      "challenge": "You have 10 attempts to find it, will you succeed?",
+      "start": "Start"
+    },
+    "hints": {
+      "higher": "Higher!",
+      "lower": "Lower!"
+    },
+    "won": {
+      "title": "Yeah, correct answer!",
+      "description": "Congratulations! You found it in $attempts attempts!",
+      "returnHome": "Return home"
+    },
+    "lost": {
+      "title": "Oh no... so close...",
+      "description": "You'll certainly succeed next time.",
+      "returnHome": "Return home"
+    }
+  }
+}

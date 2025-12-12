@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // removed unused imports
 
 import 'package:lottie/lottie.dart';
+import 'package:tamagotchi_flutter/gen/strings.g.dart';
 import 'package:tamagotchi_flutter/utils/lottie_preloader.dart';
 // visual state info accessed through model; explicit import removed
 
@@ -68,11 +69,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         setState(() => _selectedIndex = 1);
       });
     } else if (index == 2) {
-      Navigator.of(
-        context,
-      ).push(MaterialPageRoute(builder: (_) => const AchievementsPage())).then((_) {
-        setState(() => _selectedIndex = 1);
-      });
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (_) => const AchievementsPage()))
+          .then((_) {
+            setState(() => _selectedIndex = 1);
+          });
     }
   }
 
@@ -103,7 +104,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     child: BlocBuilder<HomeBloc, HomeState>(
                       builder: (context, state) {
                         if (state is HomeLoaded) {
-                          final t = state.tamagotchi;
+                          final tamagotchi = state.tamagotchi;
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -118,43 +119,45 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                 childAspectRatio: 3.2,
                                 children: [
                                   StatBar(
-                                    label: 'FAIM',
-                                    value: t.hunger,
+                                    label: t.home.stats.hunger,
+                                    value: tamagotchi.hunger,
                                     icon: Icons.restaurant_menu,
                                   ),
                                   StatBar(
-                                    label: 'ÉNERGIE',
-                                    value: t.energy,
+                                    label: t.home.stats.energy,
+                                    value: tamagotchi.energy,
                                     icon: Icons.bolt,
                                   ),
                                   StatBar(
-                                    label: 'JOIE',
-                                    value: t.happiness,
+                                    label: t.home.stats.happiness,
+                                    value: tamagotchi.happiness,
                                     icon: Icons.favorite,
                                   ),
                                   StatBar(
-                                    label: 'HYGIÈNE',
-                                    value: t.cleanliness,
+                                    label: t.home.stats.hygiene,
+                                    value: tamagotchi.cleanliness,
                                     icon: Icons.cleaning_services,
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 12),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
                                       Text(
-                                        t.name,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge
-                                            ?.copyWith(color: Color(0xFF9B7C47)),
+                                        tamagotchi.name,
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.titleLarge?.copyWith(
+                                          color: Color(0xFF9B7C47),
+                                        ),
                                       ),
                                       const SizedBox(width: 16),
                                       Text(
-                                        'Age: ${t.age}',
+                                        t.home.age(age: tamagotchi.age),
                                         style: const TextStyle(
                                           color: Color(0xFF654B1F),
                                         ),
@@ -168,7 +171,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                       vertical: 6,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withValues(alpha: 0.8),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.8,
+                                      ),
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
                                         color: const Color(0xFF9B7C47),
@@ -206,23 +211,32 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     // Wrapped in PetDetector for petting interaction
                                     if (!state.isCleaningMode)
                                       PetDetector(
-                                        enabled: t.state == VisualState.idle,
+                                        enabled:
+                                            tamagotchi.state ==
+                                            VisualState.idle,
                                         child: Center(
                                           child: _AnimationSequencePlayer(
-                                            key: ValueKey(t.state),
-                                            animations: t.state.animations,
-                                            width: MediaQuery.of(context).size.width *
+                                            key: ValueKey(tamagotchi.state),
+                                            animations:
+                                                tamagotchi.state.animations,
+                                            width:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).size.width *
                                                 0.6,
-                                            onSequenceComplete: () => viewModel.nonRepeatingEventComplete(),
+                                            onSequenceComplete:
+                                                () =>
+                                                    viewModel
+                                                        .nonRepeatingEventComplete(),
                                           ),
                                         ),
                                       ),
                                     // "Frotte !" text in cleaning mode
                                     if (state.isCleaningMode)
-                                      const Center(
+                                      Center(
                                         child: Text(
-                                          'Frotte !',
-                                          style: TextStyle(
+                                          t.home.cleaning.instruction,
+                                          style: const TextStyle(
                                             fontSize: 48,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF9B7C47),
@@ -231,7 +245,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                       ),
                                     // Poop overlay
                                     PoopOverlay(
-                                      poopCount: t.poopCount,
+                                      poopCount: tamagotchi.poopCount,
                                       isCleaningMode: state.isCleaningMode,
                                       globalRubCount: state.globalRubCount,
                                     ),
@@ -241,9 +255,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                         top: 10,
                                         right: 10,
                                         child: ElevatedButton(
-                                          onPressed: () => context
-                                              .read<HomeBloc>()
-                                              .add(const ExitCleaning()),
+                                          onPressed:
+                                              () => context
+                                                  .read<HomeBloc>()
+                                                  .add(const ExitCleaning()),
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.red,
                                             foregroundColor: Colors.white,
@@ -252,7 +267,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                               vertical: 8,
                                             ),
                                           ),
-                                          child: const Text('Quitter'),
+                                          child: Text(t.home.cleaning.exit),
                                         ),
                                       ),
                                   ],
@@ -268,7 +283,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                   ElevatedButton(
                                     onPressed:
                                         VisualState.canInterrupt(
-                                              t.state,
+                                              tamagotchi.state,
                                               VisualState.eating,
                                             )
                                             ? viewModel.feed
@@ -285,7 +300,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                       Icons.restaurant_menu,
                                       color:
                                           VisualState.canInterrupt(
-                                                t.state,
+                                                tamagotchi.state,
                                                 VisualState.eating,
                                               )
                                               ? Colors.white
@@ -295,9 +310,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                   ElevatedButton(
                                     onPressed:
                                         // Allow cleaning if there are poops OR if can interrupt
-                                        (t.poopCount > 0 ||
+                                        (tamagotchi.poopCount > 0 ||
                                                 VisualState.canInterrupt(
-                                                  t.state,
+                                                  tamagotchi.state,
                                                   VisualState.cleaning,
                                                 ))
                                             ? viewModel.clean
@@ -313,9 +328,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                     child: Icon(
                                       Icons.cleaning_services,
                                       color:
-                                          (t.poopCount > 0 ||
+                                          (tamagotchi.poopCount > 0 ||
                                                   VisualState.canInterrupt(
-                                                    t.state,
+                                                    tamagotchi.state,
                                                     VisualState.cleaning,
                                                   ))
                                               ? Colors.white

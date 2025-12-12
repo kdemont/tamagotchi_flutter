@@ -1,0 +1,51 @@
+{
+  "appName": "Tamagotchi",
+  "splash": {
+    "loading": "Chargement... $progress%",
+    "ready": "Prêt !"
+  },
+  "home": {
+    "stats": {
+      "hunger": "FAIM",
+      "energy": "ÉNERGIE",
+      "happiness": "JOIE",
+      "hygiene": "HYGIÈNE"
+    },
+    "age": "Age: $age",
+    "cleaning": {
+      "instruction": "Frotte !",
+      "exit": "Quitter"
+    }
+  },
+  "nav": {
+    "game": "JEU",
+    "home": "CHAMBRE",
+    "achievements": "SUCCÈS"
+  },
+  "achievements": {
+    "title": "Succès",
+    "placeholder": "Page Succès - à implémenter"
+  },
+  "game": {
+    "rules": {
+      "title": "$name souhaite jouer !",
+      "description": "$name va vous faire deviner un nombre entre 1 et 100 en vous donnant des indices.",
+      "challenge": "Vous avez 10 essais pour le trouver, y arriverez-vous ?",
+      "start": "Démarrer"
+    },
+    "hints": {
+      "higher": "Plus grand !",
+      "lower": "Plus petit !"
+    },
+    "won": {
+      "title": "Yeah, bonne réponse !",
+      "description": "Félicitations ! Vous avez trouvé en $attempts coups !",
+      "returnHome": "Retour à la maison"
+    },
+    "lost": {
+      "title": "Oh non... si proche...",
+      "description": "Vous réussirez certainement la prochaine fois.",
+      "returnHome": "Retour à la maison"
+    }
+  }
+}

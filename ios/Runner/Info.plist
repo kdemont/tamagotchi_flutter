@@ -49,5 +49,10 @@
     <string>Cette application utilise l'accéléromètre pour détecter les secousses du téléphone et interagir avec votre Tamagotchi.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Nous avons besoin d'accéder à la caméra pour mesurer la lumière ambiante afin de détecter quand votre Tamagotchi doit dormir.</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>fr</string>
+	</array>
 </dict>
 </plist>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tamagotchi_flutter/gen/strings.g.dart';
 
 import '../../bloc/game_bloc.dart';
 
@@ -64,9 +65,9 @@ class GameWonView extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               // Title
-              const Text(
-                'Yeah, bonne réponse !',
-                style: TextStyle(
+              Text(
+                t.game.won.title,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -76,7 +77,9 @@ class GameWonView extends StatelessWidget {
               const SizedBox(height: 24),
               // Description
               Text(
-                'Félicitations ! Vous avez trouvé en ${10 - (state.finalScore - 100) ~/ 10} coups !',
+                t.game.won.description(
+                  attempts: 10 - (state.finalScore - 100) ~/ 10,
+                ),
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
@@ -101,9 +104,9 @@ class GameWonView extends StatelessWidget {
                     ),
                     elevation: 4,
                   ),
-                  child: const Text(
-                    'Retour à la maison',
-                    style: TextStyle(
+                  child: Text(
+                    t.game.won.returnHome,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),

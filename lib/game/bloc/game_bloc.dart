@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:tamagotchi_flutter/gen/strings.g.dart';
 
 import '../../home/bloc/home_bloc.dart';
 
@@ -25,11 +26,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     final random = Random();
     final targetNumber = random.nextInt(maxNumber - minNumber + 1) + minNumber;
 
-    emit(GamePlaying(
-      targetNumber: targetNumber,
-      attemptsRemaining: maxAttempts,
-      score: 0,
-    ));
+    emit(
+      GamePlaying(
+        targetNumber: targetNumber,
+        attemptsRemaining: maxAttempts,
+        score: 0,
+      ),
+    );
   }
 
   void _onMakeGuess(MakeGuess event, Emitter<GameState> emit) {
@@ -48,27 +51,31 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     } else if (newAttempts <= 0) {
       // Lost! The tamagotchi will naturally be sad as happiness decays
       // No specific action needed - the player's loss doesn't require an event
-      emit(GameLost(
-        targetNumber: currentState.targetNumber,
-        finalScore: currentState.score,
-      ));
+      emit(
+        GameLost(
+          targetNumber: currentState.targetNumber,
+          finalScore: currentState.score,
+        ),
+      );
     } else {
       // Continue playing
       String hint;
       if (guess < currentState.targetNumber) {
-        hint = 'Plus grand !';
+        hint = t.game.hints.higher;
       } else {
-        hint = 'Plus petit !';
+        hint = t.game.hints.lower;
       }
 
       final newScore = currentState.score + 5; // Points for trying
 
-      emit(currentState.copyWith(
-        attemptsRemaining: newAttempts,
-        score: newScore,
-        hint: hint,
-        previousGuesses: newPreviousGuesses,
-      ));
+      emit(
+        currentState.copyWith(
+          attemptsRemaining: newAttempts,
+          score: newScore,
+          hint: hint,
+          previousGuesses: newPreviousGuesses,
+        ),
+      );
     }
   }
 
@@ -76,11 +83,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     final random = Random();
     final targetNumber = random.nextInt(maxNumber - minNumber + 1) + minNumber;
 
-    emit(GamePlaying(
-      targetNumber: targetNumber,
-      attemptsRemaining: maxAttempts,
-      score: 0,
-    ));
+    emit(
+      GamePlaying(
+        targetNumber: targetNumber,
+        attemptsRemaining: maxAttempts,
+        score: 0,
+      ),
+    );
   }
 
   void _onReturnHome(ReturnHome event, Emitter<GameState> emit) {
