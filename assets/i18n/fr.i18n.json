@@ -4,6 +4,15 @@
     "loading": "Chargement... $progress%",
     "ready": "Prêt !"
   },
+  "permissions": {
+    "activityTitle": "Compteur de pas",
+    "activityDescription": "Tamagotchi a besoin d'accéder à votre activité physique pour compter vos pas et garder votre animal heureux !",
+    "allow": "Autoriser",
+    "deny": "Plus tard",
+    "deniedTitle": "Permission refusée",
+    "deniedMessage": "Le compteur de pas ne sera pas disponible. Vous pouvez l'activer plus tard dans les paramètres.",
+    "ok": "OK"
+  },
   "home": {
     "stats": {
       "hunger": "FAIM",

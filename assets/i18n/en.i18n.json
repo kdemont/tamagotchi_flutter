@@ -4,6 +4,15 @@
     "loading": "Loading... $progress%",
     "ready": "Ready!"
   },
+  "permissions": {
+    "activityTitle": "Step Counter",
+    "activityDescription": "Tamagotchi needs access to your physical activity to count your steps and keep your pet happy!",
+    "allow": "Allow",
+    "deny": "Not now",
+    "deniedTitle": "Permission Denied",
+    "deniedMessage": "Step counting will not be available. You can enable it later in settings.",
+    "ok": "OK"
+  },
   "home": {
     "stats": {
       "hunger": "HUNGER",

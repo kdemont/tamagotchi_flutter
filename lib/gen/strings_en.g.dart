@@ -45,6 +45,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	String get appName => 'Tamagotchi';
 
 	late final TranslationsSplashEn splash = TranslationsSplashEn._(_root);
+	late final TranslationsPermissionsEn permissions = TranslationsPermissionsEn._(_root);
 	late final TranslationsHomeEn home = TranslationsHomeEn._(_root);
 	late final TranslationsNavEn nav = TranslationsNavEn._(_root);
 	late final TranslationsAchievementsEn achievements = TranslationsAchievementsEn._(_root);
@@ -64,6 +65,36 @@ class TranslationsSplashEn {
 
 	/// en: 'Ready!'
 	String get ready => 'Ready!';
+}
+
+// Path: permissions
+class TranslationsPermissionsEn {
+	TranslationsPermissionsEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Step Counter'
+	String get activityTitle => 'Step Counter';
+
+	/// en: 'Tamagotchi needs access to your physical activity to count your steps and keep your pet happy!'
+	String get activityDescription => 'Tamagotchi needs access to your physical activity to count your steps and keep your pet happy!';
+
+	/// en: 'Allow'
+	String get allow => 'Allow';
+
+	/// en: 'Not now'
+	String get deny => 'Not now';
+
+	/// en: 'Permission Denied'
+	String get deniedTitle => 'Permission Denied';
+
+	/// en: 'Step counting will not be available. You can enable it later in settings.'
+	String get deniedMessage => 'Step counting will not be available. You can enable it later in settings.';
+
+	/// en: 'OK'
+	String get ok => 'OK';
 }
 
 // Path: home
@@ -246,6 +277,13 @@ extension on Translations {
 			'appName' => 'Tamagotchi',
 			'splash.loading' => ({required Object progress}) => 'Loading... ${progress}%',
 			'splash.ready' => 'Ready!',
+			'permissions.activityTitle' => 'Step Counter',
+			'permissions.activityDescription' => 'Tamagotchi needs access to your physical activity to count your steps and keep your pet happy!',
+			'permissions.allow' => 'Allow',
+			'permissions.deny' => 'Not now',
+			'permissions.deniedTitle' => 'Permission Denied',
+			'permissions.deniedMessage' => 'Step counting will not be available. You can enable it later in settings.',
+			'permissions.ok' => 'OK',
 			'home.stats.hunger' => 'HUNGER',
 			'home.stats.energy' => 'ENERGY',
 			'home.stats.happiness' => 'HAPPINESS',

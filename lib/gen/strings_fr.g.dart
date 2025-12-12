@@ -39,6 +39,7 @@ class TranslationsFr with BaseTranslations<AppLocale, Translations> implements T
 	// Translations
 	@override String get appName => 'Tamagotchi';
 	@override late final _TranslationsSplashFr splash = _TranslationsSplashFr._(_root);
+	@override late final _TranslationsPermissionsFr permissions = _TranslationsPermissionsFr._(_root);
 	@override late final _TranslationsHomeFr home = _TranslationsHomeFr._(_root);
 	@override late final _TranslationsNavFr nav = _TranslationsNavFr._(_root);
 	@override late final _TranslationsAchievementsFr achievements = _TranslationsAchievementsFr._(_root);
@@ -54,6 +55,22 @@ class _TranslationsSplashFr implements TranslationsSplashEn {
 	// Translations
 	@override String loading({required Object progress}) => 'Chargement... ${progress}%';
 	@override String get ready => 'Prêt !';
+}
+
+// Path: permissions
+class _TranslationsPermissionsFr implements TranslationsPermissionsEn {
+	_TranslationsPermissionsFr._(this._root);
+
+	final TranslationsFr _root; // ignore: unused_field
+
+	// Translations
+	@override String get activityTitle => 'Compteur de pas';
+	@override String get activityDescription => 'Tamagotchi a besoin d\'accéder à votre activité physique pour compter vos pas et garder votre animal heureux !';
+	@override String get allow => 'Autoriser';
+	@override String get deny => 'Plus tard';
+	@override String get deniedTitle => 'Permission refusée';
+	@override String get deniedMessage => 'Le compteur de pas ne sera pas disponible. Vous pouvez l\'activer plus tard dans les paramètres.';
+	@override String get ok => 'OK';
 }
 
 // Path: home
@@ -187,6 +204,13 @@ extension on TranslationsFr {
 			'appName' => 'Tamagotchi',
 			'splash.loading' => ({required Object progress}) => 'Chargement... ${progress}%',
 			'splash.ready' => 'Prêt !',
+			'permissions.activityTitle' => 'Compteur de pas',
+			'permissions.activityDescription' => 'Tamagotchi a besoin d\'accéder à votre activité physique pour compter vos pas et garder votre animal heureux !',
+			'permissions.allow' => 'Autoriser',
+			'permissions.deny' => 'Plus tard',
+			'permissions.deniedTitle' => 'Permission refusée',
+			'permissions.deniedMessage' => 'Le compteur de pas ne sera pas disponible. Vous pouvez l\'activer plus tard dans les paramètres.',
+			'permissions.ok' => 'OK',
 			'home.stats.hunger' => 'FAIM',
 			'home.stats.energy' => 'ÉNERGIE',
 			'home.stats.happiness' => 'JOIE',
