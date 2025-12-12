@@ -213,6 +213,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           current.hunger + TamagotchiConfig.feedHungerGain,
         ),
         happiness: TamagotchiConfig.clampStat(current.happiness + 5),
+        state: VisualState.eating,
         lastUpdateTime: DateTime.now(),
       );
       repository.saveTamagotchi(updated);

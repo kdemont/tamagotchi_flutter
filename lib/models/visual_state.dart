@@ -6,7 +6,7 @@ enum VisualState {
   // hungry([VisualAnimation('hungry.json', false)]),
   //happy([VisualAnimation('happy_bouncing.json', false)]),
   crying([VisualAnimation('crying.json', false)]),
-  eating([VisualAnimation('happy_bouncing.json', false)]),
+  eating([VisualAnimation('eating.json', false)]),
   cleaning([VisualAnimation('cleaning.json', false)]),
   liceAttack([
     VisualAnimation('lice_attack_init_opt.json', false),
