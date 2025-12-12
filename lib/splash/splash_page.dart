@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:tamagotchi_flutter/gen/strings.g.dart';
 import 'package:tamagotchi_flutter/utils/lottie_preloader.dart';
 
 /// Splash screen that preloads all Lottie animations before navigating to home.
@@ -19,16 +23,24 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    _preloadAnimations();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    // First preload animations
+    await _preloadAnimations();
+
+    // Then check and request permissions
+    await _checkAndRequestPermissions();
+
+    // Finally navigate to home
+    _navigateToHome();
   }
 
   Future<void> _preloadAnimations() async {
     try {
       //      await MyLottieCache.instance.preloadAllWithProgress((
-      await LottiePreloader.preloadAllWithProgress((
-        progress,
-        assetName,
-      ) {
+      await LottiePreloader.preloadAllWithProgress((progress, assetName) {
         if (mounted) {
           setState(() {
             _progress = progress;
@@ -42,13 +54,148 @@ class _SplashPageState extends State<SplashPage> {
 
     if (mounted) {
       setState(() => _isLoading = false);
-      // Small delay to show 100% before navigating
+      // Small delay to show 100% before continuing
       await Future.delayed(const Duration(milliseconds: 300));
+    }
+  }
+
+  Future<void> _checkAndRequestPermissions() async {
+    // Activity recognition permission is needed for pedometer
+    // On Android: ACTIVITY_RECOGNITION
+    // On iOS: Motion & Fitness
+
+    Permission permission;
+    if (Platform.isAndroid) {
+      permission = Permission.activityRecognition;
+    } else if (Platform.isIOS) {
+      permission = Permission.sensors;
+    } else {
+      return; // No permission needed on other platforms
+    }
+
+    final status = await permission.status;
+
+    if (status.isGranted) {
+      return; // Already granted
+    }
+
+    if (status.isDenied) {
+      // Show custom dialog before requesting permission
       if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => widget.nextPageBuilder()),
-        );
+        //final shouldRequest = await _showPermissionExplanationDialog();
+        //if (shouldRequest) {
+          final result = await permission.request();
+          //if (result.isPermanentlyDenied && mounted) {
+         //   _showPermissionDeniedDialog();
+         // }
+       // }
       }
+    } //else if (status.isPermanentlyDenied && mounted) {
+     // _showPermissionDeniedDialog();
+    //}
+  }
+
+  // Pas fan de ce dialogue
+  Future<bool> _showPermissionExplanationDialog() async {
+    return await showDialog<bool>(
+          context: context,
+          barrierDismissible: false,
+          builder:
+              (context) => AlertDialog(
+                backgroundColor: const Color(0xFFFFF8E7),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                title: Row(
+                  children: [
+                    const Icon(
+                      Icons.directions_walk,
+                      color: Color(0xFF9B7C47),
+                      size: 28,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        t.permissions.activityTitle,
+                        style: const TextStyle(
+                          color: Color(0xFF654B1F),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                content: Text(
+                  t.permissions.activityDescription,
+                  style: const TextStyle(
+                    color: Color(0xFF654B1F),
+                    fontSize: 16,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(
+                      t.permissions.deny,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF9B7C47),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(t.permissions.allow),
+                  ),
+                ],
+              ),
+        ) ??
+        false;
+  }
+
+  Future<void> _showPermissionDeniedDialog() async {
+    await showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            backgroundColor: const Color(0xFFFFF8E7),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: Text(
+              t.permissions.deniedTitle,
+              style: const TextStyle(
+                color: Color(0xFF654B1F),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Text(
+              t.permissions.deniedMessage,
+              style: const TextStyle(color: Color(0xFF654B1F)),
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF9B7C47),
+                  foregroundColor: Colors.white,
+                ),
+                child: Text(t.permissions.ok),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _navigateToHome() {
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => widget.nextPageBuilder()),
+      );
     }
   }
 
@@ -69,7 +216,7 @@ class _SplashPageState extends State<SplashPage> {
 
                 // Title
                 Text(
-                  'Tamagotchi',
+                  t.appName,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: const Color(0xFF654B1F),
                     fontWeight: FontWeight.bold,
@@ -94,8 +241,8 @@ class _SplashPageState extends State<SplashPage> {
                 // Progress text
                 Text(
                   _isLoading
-                      ? 'Chargement... ${(_progress * 100).toInt()}%'
-                      : 'Prêt !',
+                      ? t.splash.loading(progress: (_progress * 100).toInt())
+                      : t.splash.ready,
                   style: const TextStyle(
                     color: Color(0xFF654B1F),
                     fontSize: 16,

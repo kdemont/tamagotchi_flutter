@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tamagotchi_flutter/gen/strings.g.dart';
 
 import '../../bloc/game_bloc.dart';
 
@@ -63,9 +64,9 @@ class GameRulesView extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               // Title
-              const Text(
-                'Bobby souhaite jouer !',
-                style: TextStyle(
+              Text(
+                t.game.rules.title(name: 'Bobby'),
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -74,9 +75,9 @@ class GameRulesView extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               // Description
-              const Text(
-                'Bobby va vous faire deviner un nombre entre 1 et 100 en vous donnant des indices.',
-                style: TextStyle(
+              Text(
+                t.game.rules.description(name: 'Bobby'),
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
                   height: 1.5,
@@ -84,9 +85,9 @@ class GameRulesView extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Vous avez 10 essais pour le trouver, y arriverez-vous ?',
-                style: TextStyle(
+              Text(
+                t.game.rules.challenge,
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
                   height: 1.5,
@@ -110,9 +111,9 @@ class GameRulesView extends StatelessWidget {
                     ),
                     elevation: 4,
                   ),
-                  child: const Text(
-                    'Démarrer',
-                    style: TextStyle(
+                  child: Text(
+                    t.game.rules.start,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),

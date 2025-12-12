@@ -42,7 +42,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AmbientLight _ambientLight = AmbientLight(frontCamera: true);
   StreamSubscription<double>? _lightSub;
 
-  static const double lightThreshold = 1; // lux threshold for darkness (camera-based sensor)
+  static const double lightThreshold = 50; // lux threshold for darkness (camera-based sensor)
+  // pour IOS
   bool? _isSleeping; // prevent multiple sleep triggers
 
   void startAccelerometer() {
@@ -441,7 +442,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final current = (state as HomeLoaded).tamagotchi;
 
       // Log light level continuously
-      //print('[💡 Light] ${lux.toStringAsFixed(1)} lux ${lux < lightThreshold ? "🌙 DARK" : "☀️ BRIGHT"}');
+      print('[💡 Light] ${lux.toStringAsFixed(1)} lux ${lux < lightThreshold ? "🌙 DARK" : "☀️ BRIGHT"}');
 
       _isSleeping ??= lux < lightThreshold;
 

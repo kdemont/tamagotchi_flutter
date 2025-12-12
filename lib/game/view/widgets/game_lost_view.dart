@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tamagotchi_flutter/gen/strings.g.dart';
 
 import '../../bloc/game_bloc.dart';
 
@@ -64,9 +65,9 @@ class GameLostView extends StatelessWidget {
               ),
               const SizedBox(height: 40),
               // Title
-              const Text(
-                'Oh non... si proche...',
-                style: TextStyle(
+              Text(
+                t.game.lost.title,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
@@ -75,9 +76,9 @@ class GameLostView extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               // Description
-              const Text(
-                'Vous réussirez certainement la prochaine fois.',
-                style: TextStyle(
+              Text(
+                t.game.lost.description,
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
                   height: 1.5,
@@ -101,9 +102,9 @@ class GameLostView extends StatelessWidget {
                     ),
                     elevation: 4,
                   ),
-                  child: const Text(
-                    'Retour à la maison',
-                    style: TextStyle(
+                  child: Text(
+                    t.game.lost.returnHome,
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
