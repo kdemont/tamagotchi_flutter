@@ -79,3 +79,15 @@ class UpdateSteps extends HomeEvent {
 class Pet extends HomeEvent {
   const Pet();
 }
+
+class Dead extends HomeEvent {
+  const Dead();
+}
+
+class CreateNewTamagotchi extends HomeEvent {
+  final String name;
+  const CreateNewTamagotchi(this.name);
+
+  @override
+  List<Object?> get props => [name];
+}

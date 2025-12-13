@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tamagotchi_flutter/routing/app_router.dart';
 import 'home/bloc/home_bloc.dart';
 import 'repository/tamagotchi_repository.dart';
-import 'home/view/home_page.dart';
 import 'splash/splash_page.dart';
 
 class MyApp extends StatelessWidget {
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           title: 'Tamagotchi MVVM + BLoC',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: SplashPage(nextPageBuilder: () => const HomePage()),
+          home: SplashPage(nextPageBuilder: () => AppRouter(repository: repo)),
           //home: const HomePage(),
         ),
       ),

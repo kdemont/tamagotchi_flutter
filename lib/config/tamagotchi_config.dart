@@ -70,7 +70,7 @@ class TamagotchiConfig {
   static const int happinessDecayPerTickStressed = 2;
 
   /// Cleanliness decay per tick (outside of events)
-  static const int cleanlinessDecayPerTick = 0;
+  static const int cleanlinessDecayPerTick = 1;
 
   /// Cleanliness loss during a poop event
   static const int poopCleanlinessLoss = 15;
@@ -80,7 +80,7 @@ class TamagotchiConfig {
   // ============================================================================
 
   /// Hunger gain when feeding
-  static const int feedHungerGain = 30;
+  static const int feedHungerGain = 55;
 
   /// Happiness gain when playing
   static const int playHappinessGain = 25;
