@@ -1,7 +1,7 @@
 // Configuration du document
 #set document(
   title: "AddMoApp - Rapport de projet",
-  author: "Killian Demont & Robin Zweifel",
+  author: "Kilian Demont & Robin Zweifel",
   date: auto,
 )
 
