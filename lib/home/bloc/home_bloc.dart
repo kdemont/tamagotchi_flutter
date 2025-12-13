@@ -759,7 +759,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     // Redémarrer les systèmes
     _startTicker();
     startLightSensor();
-    startPedometer();
     _isSleeping = false;
 
     emit(HomeLoaded(tamagotchi: newTama));
@@ -771,7 +770,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     print('[TamagotchiBloc] Tamagotchi is DEAD!');
     stopAccelerometer();
     stopLightSensor();
-    stopPedometer();
     _ticker?.cancel();
 
     // Émettre l'état avec le tamagotchi mort
