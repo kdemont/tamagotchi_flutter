@@ -196,7 +196,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       await repository.saveTamagotchi(updated);
 
       if (updated.isDead) {
-        add(const Dead());
+        add(Dead(updated));
       }
 
       // if after applying elapsed ticks the tama is infested, start accelerometer
@@ -252,7 +252,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       repository.saveTamagotchi(updated);
 
       if (updated.isDead) {
-        add(const Dead());
+        add(Dead(updated));
         return;
       }
 
@@ -448,7 +448,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       repository.saveTamagotchi(updated);
 
       if (updated.isDead) {
-        add(const Dead());
+        add(Dead(updated));
         return;
       }
 
@@ -457,7 +457,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   void _onAccel(AccelerometerEvent e) {
-    final g = sqrt(e.x * e.x + e.y * e.y + e.z * e.z) / TamagotchiConfig.gravity;
+    final g =
+        sqrt(e.x * e.x + e.y * e.y + e.z * e.z) / TamagotchiConfig.gravity;
     if (g > gThreshold) {
       final now = DateTime.now().millisecondsSinceEpoch;
       _timestamps.add(now);
@@ -519,7 +520,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       await repository.saveTamagotchi(updated);
 
       if (updated.isDead) {
-        add(const Dead());
+        add(Dead(updated));
         return;
       }
 
@@ -687,9 +688,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future<void> _onCreateNewTamagotchi(
-      CreateNewTamagotchi event,
-      Emitter<HomeState> emit,
-      ) async {
+    CreateNewTamagotchi event,
+    Emitter<HomeState> emit,
+  ) async {
     final newTama = Tamagotchi.newWithName(event.name);
     await repository.saveTamagotchi(newTama);
 
@@ -711,13 +712,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     stopPedometer();
     _ticker?.cancel();
 
-    // mettre à jour l'état pour indiquer la mort
+    // Émettre l'état avec le tamagotchi mort
     final currentState = state as HomeLoaded;
-    final current = currentState.tamagotchi;
-    final updated = current.copyWith(
-      lastUpdateTime: DateTime.now(),
-    );
-    repository.saveTamagotchi(updated);
-    emit(currentState.copyWith(tamagotchi: updated));
-    }
+    repository.saveTamagotchi(event.tamagotchi);
+    emit(currentState.copyWith(tamagotchi: event.tamagotchi));
+  }
 }

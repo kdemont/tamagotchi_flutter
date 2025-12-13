@@ -81,7 +81,11 @@ class Pet extends HomeEvent {
 }
 
 class Dead extends HomeEvent {
-  const Dead();
+  final Tamagotchi tamagotchi;
+  const Dead(this.tamagotchi);
+
+  @override
+  List<Object?> get props => [tamagotchi];
 }
 
 class CreateNewTamagotchi extends HomeEvent {
