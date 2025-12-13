@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tamagotchi_flutter/gen/strings.g.dart';
 
 import '../../home/bloc/home_bloc.dart';
 import '../../home/view/home_page.dart';
 
 class NamingPage extends StatefulWidget {
-  const NamingPage({Key? key}) : super(key: key);
+  const NamingPage({super.key});
 
   @override
   State<NamingPage> createState() => _NamingPageState();
@@ -35,8 +36,8 @@ class _NamingPageState extends State<NamingPage> {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Veuillez entrer un nom pour votre Tamagotchi'),
+        SnackBar(
+          content: Text(t.naming.emptyError),
           backgroundColor: Colors.red,
         ),
       );
@@ -74,7 +75,7 @@ class _NamingPageState extends State<NamingPage> {
                 children: [
                   // Title
                   Text(
-                    '🥚 Bienvenue !',
+                    t.naming.welcome,
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color: const Color(0xFF654B1F),
                       fontWeight: FontWeight.bold,
@@ -82,7 +83,7 @@ class _NamingPageState extends State<NamingPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Comment voulez-vous appeler votre nouveau compagnon ?',
+                    t.naming.question,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: const Color(0xFF9B7C47),
@@ -112,7 +113,7 @@ class _NamingPageState extends State<NamingPage> {
                         color: Color(0xFF654B1F),
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Nom du Tamagotchi',
+                        hintText: t.naming.placeholder,
                         hintStyle: TextStyle(
                           color: Colors.brown.withOpacity(0.4),
                         ),
@@ -147,9 +148,9 @@ class _NamingPageState extends State<NamingPage> {
                       ),
                       elevation: 4,
                     ),
-                    child: const Text(
-                      'Créer mon Tamagotchi',
-                      style: TextStyle(
+                    child: Text(
+                      t.naming.create,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),

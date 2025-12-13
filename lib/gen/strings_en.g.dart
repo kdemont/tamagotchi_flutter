@@ -50,6 +50,8 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsNavEn nav = TranslationsNavEn._(_root);
 	late final TranslationsAchievementsEn achievements = TranslationsAchievementsEn._(_root);
 	late final TranslationsGameEn game = TranslationsGameEn._(_root);
+	late final TranslationsGameOverEn gameOver = TranslationsGameOverEn._(_root);
+	late final TranslationsNamingEn naming = TranslationsNamingEn._(_root);
 }
 
 // Path: splash
@@ -156,6 +158,51 @@ class TranslationsGameEn {
 	late final TranslationsGameHintsEn hints = TranslationsGameHintsEn._(_root);
 	late final TranslationsGameWonEn won = TranslationsGameWonEn._(_root);
 	late final TranslationsGameLostEn lost = TranslationsGameLostEn._(_root);
+}
+
+// Path: gameOver
+class TranslationsGameOverEn {
+	TranslationsGameOverEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Rest in peace'
+	String get title => 'Rest in peace';
+
+	/// en: 'Lived $age day(s)'
+	String lived({required Object age}) => 'Lived ${age} day(s)';
+
+	/// en: 'Your companion has joined the stars. But a new friend may be waiting for you...'
+	String get message => 'Your companion has joined the stars.\nBut a new friend may be waiting for you...';
+
+	/// en: 'Adopt a new Tamagotchi'
+	String get newGame => 'Adopt a new Tamagotchi';
+}
+
+// Path: naming
+class TranslationsNamingEn {
+	TranslationsNamingEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Welcome!'
+	String get welcome => 'Welcome!';
+
+	/// en: 'What do you want to name your new companion?'
+	String get question => 'What do you want to name your new companion?';
+
+	/// en: 'Tamagotchi name'
+	String get placeholder => 'Tamagotchi name';
+
+	/// en: 'Please enter a name for your Tamagotchi'
+	String get emptyError => 'Please enter a name for your Tamagotchi';
+
+	/// en: 'Create my Tamagotchi'
+	String get create => 'Create my Tamagotchi';
 }
 
 // Path: home.stats
@@ -308,6 +355,15 @@ extension on Translations {
 			'game.lost.title' => 'Oh no... so close...',
 			'game.lost.description' => 'You\'ll certainly succeed next time.',
 			'game.lost.returnHome' => 'Return home',
+			'gameOver.title' => 'Rest in peace',
+			'gameOver.lived' => ({required Object age}) => 'Lived ${age} day(s)',
+			'gameOver.message' => 'Your companion has joined the stars.\nBut a new friend may be waiting for you...',
+			'gameOver.newGame' => 'Adopt a new Tamagotchi',
+			'naming.welcome' => 'Welcome!',
+			'naming.question' => 'What do you want to name your new companion?',
+			'naming.placeholder' => 'Tamagotchi name',
+			'naming.emptyError' => 'Please enter a name for your Tamagotchi',
+			'naming.create' => 'Create my Tamagotchi',
 			_ => null,
 		};
 	}

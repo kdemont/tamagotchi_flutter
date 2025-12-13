@@ -10,7 +10,7 @@ import '../game_over/game_over_page.dart';
 class AppRouter extends StatelessWidget {
   final TamagotchiRepository repository;
 
-  const AppRouter({Key? key, required this.repository}) : super(key: key);
+  const AppRouter({super.key, required this.repository});
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tamagotchi_flutter/gen/strings.g.dart';
 
 import '../naming/view/naming_page.dart';
 
@@ -7,28 +8,18 @@ class GameOverPage extends StatelessWidget {
   final int age;
 
   const GameOverPage({
-    Key? key,
+    super.key,
     required this.tamagotchiName,
     required this.age,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Background sombre
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.grey.shade800, Colors.grey.shade900],
-                ),
-              ),
-            ),
-          ),
+          // Background dans le style de l'app
+          Positioned.fill(child: Container(color: const Color(0xFFF5E6D3))),
 
           // Content
           SafeArea(
@@ -48,9 +39,9 @@ class GameOverPage extends StatelessWidget {
 
                   // Title
                   Text(
-                    'Repose en paix',
+                    t.gameOver.title,
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -60,18 +51,18 @@ class GameOverPage extends StatelessWidget {
                   Text(
                     tamagotchiName,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Colors.amber,
-                      fontStyle: FontStyle.italic,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 8),
 
                   // Age
                   Text(
-                    'A vécu $age jour${age > 1 ? 's' : ''}',
+                    t.gameOver.lived(age: age),
                     style: Theme.of(
                       context,
-                    ).textTheme.bodyLarge?.copyWith(color: Colors.white70),
+                    ).textTheme.bodyLarge?.copyWith(color: Colors.black),
                   ),
                   const SizedBox(height: 48),
 
@@ -79,39 +70,48 @@ class GameOverPage extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: const Color(0xFFD4A574).withOpacity(0.3),
                       borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: const Color(0xFFD4A574),
+                        width: 2,
+                      ),
                     ),
                     child: Text(
-                      'Votre compagnon a rejoint les étoiles.\nMais un nouvel ami vous attend peut-être...',
+                      t.gameOver.message,
                       textAlign: TextAlign.center,
                       style: Theme.of(
                         context,
-                      ).textTheme.bodyLarge?.copyWith(color: Colors.white60),
+                      ).textTheme.bodyLarge?.copyWith(color: Colors.black),
                     ),
                   ),
                   const SizedBox(height: 48),
 
                   // New game button
-                  ElevatedButton.icon(
+                  ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (_) => const NamingPage()),
                       );
                     },
-                    icon: const Icon(Icons.egg_outlined),
-                    label: const Text('Adopter un nouveau Tamagotchi'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.amber,
-                      foregroundColor: Colors.black87,
+                      backgroundColor: const Color(0xFFE8B86D),
+                      foregroundColor: Colors.black,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
                         vertical: 16,
+                        horizontal: 16,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       elevation: 4,
+                    ),
+                    child: Text(
+                      t.gameOver.newGame,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],

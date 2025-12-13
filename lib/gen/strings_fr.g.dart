@@ -44,6 +44,8 @@ class TranslationsFr with BaseTranslations<AppLocale, Translations> implements T
 	@override late final _TranslationsNavFr nav = _TranslationsNavFr._(_root);
 	@override late final _TranslationsAchievementsFr achievements = _TranslationsAchievementsFr._(_root);
 	@override late final _TranslationsGameFr game = _TranslationsGameFr._(_root);
+	@override late final _TranslationsGameOverFr gameOver = _TranslationsGameOverFr._(_root);
+	@override late final _TranslationsNamingFr naming = _TranslationsNamingFr._(_root);
 }
 
 // Path: splash
@@ -119,6 +121,33 @@ class _TranslationsGameFr implements TranslationsGameEn {
 	@override late final _TranslationsGameHintsFr hints = _TranslationsGameHintsFr._(_root);
 	@override late final _TranslationsGameWonFr won = _TranslationsGameWonFr._(_root);
 	@override late final _TranslationsGameLostFr lost = _TranslationsGameLostFr._(_root);
+}
+
+// Path: gameOver
+class _TranslationsGameOverFr implements TranslationsGameOverEn {
+	_TranslationsGameOverFr._(this._root);
+
+	final TranslationsFr _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Repose en paix';
+	@override String lived({required Object age}) => 'A vécu ${age} jour(s)';
+	@override String get message => 'Votre compagnon a rejoint les étoiles.\nMais un nouvel ami vous attend peut-être...';
+	@override String get newGame => 'Adopter un nouveau Tamagotchi';
+}
+
+// Path: naming
+class _TranslationsNamingFr implements TranslationsNamingEn {
+	_TranslationsNamingFr._(this._root);
+
+	final TranslationsFr _root; // ignore: unused_field
+
+	// Translations
+	@override String get welcome => 'Bienvenue !';
+	@override String get question => 'Comment voulez-vous appeler votre nouveau compagnon ?';
+	@override String get placeholder => 'Nom du Tamagotchi';
+	@override String get emptyError => 'Veuillez entrer un nom pour votre Tamagotchi';
+	@override String get create => 'Créer mon Tamagotchi';
 }
 
 // Path: home.stats
@@ -235,6 +264,15 @@ extension on TranslationsFr {
 			'game.lost.title' => 'Oh non... si proche...',
 			'game.lost.description' => 'Vous réussirez certainement la prochaine fois.',
 			'game.lost.returnHome' => 'Retour à la maison',
+			'gameOver.title' => 'Repose en paix',
+			'gameOver.lived' => ({required Object age}) => 'A vécu ${age} jour(s)',
+			'gameOver.message' => 'Votre compagnon a rejoint les étoiles.\nMais un nouvel ami vous attend peut-être...',
+			'gameOver.newGame' => 'Adopter un nouveau Tamagotchi',
+			'naming.welcome' => 'Bienvenue !',
+			'naming.question' => 'Comment voulez-vous appeler votre nouveau compagnon ?',
+			'naming.placeholder' => 'Nom du Tamagotchi',
+			'naming.emptyError' => 'Veuillez entrer un nom pour votre Tamagotchi',
+			'naming.create' => 'Créer mon Tamagotchi',
 			_ => null,
 		};
 	}
