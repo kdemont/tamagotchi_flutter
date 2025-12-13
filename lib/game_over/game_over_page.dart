@@ -18,7 +18,6 @@ class GameOverPage extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Background dans le style de l'app
           Positioned.fill(child: Container(color: const Color(0xFFF5E6D3))),
 
           // Content
