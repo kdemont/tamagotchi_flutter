@@ -19,15 +19,6 @@ La classe `TamagotchiRepository` encapsule la persistance des données via `Shar
 
 L'utilisation de `SharedPreferences` garantit une solution légère et rapide pour les données non relationnelles de l'application. Une base de données plus complexe (ex: SQLite) n'était pas nécessaire pour ce cas d'usage.
 
-=== MVVM (Model-View-ViewModel) ou Repository ???
-
-TODO
-
-L'architecture suit le pattern MVVM où :
-- *Model* : Représenté par la classe `Tamagotchi` et ses propriétés
-- *View* : Les widgets Flutter affichant l'interface utilisateur
-- *ViewModel* : Les BLoC gérant la logique métier et l'état de l'application.
-
 === Modèle de données immutable
 
 Le modèle `Tamagotchi` est conçu avec des propriétés `final` et une méthode `copyWith()` pour garantir l'immutabilité. Les statistiques gérées incluent :
@@ -255,7 +246,7 @@ Ce processus fut long et fastidieux, nécessitant parfois beaucoup d'itérations
 
 Des astuces ont été testées pour essayé d'améliorer la qualité des animations générées, comme l'utilisation de ChatGPT pour affiner les prompts textuels.
 
-La méthodologie complète et les scripts utilisés sont disponibles ... TODO
+La méthodologie complète et les scripts utilisés sont disponibles dans le répertoire du projet sous `assets_generation/`.
 
 === Gestion de la mémoire avec Lottie
 
