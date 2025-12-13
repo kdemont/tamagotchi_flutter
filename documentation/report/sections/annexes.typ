@@ -29,12 +29,11 @@ Le document est à trouver dans le dossier de rendu du projet.
     - Initialisation du projet Flutter
     - Structure BLoC mise en place
     - Animations de base (happy bouncing)
-    - Génération des assets
+    - Génération des assets (avec RunwayML)
   ],
   [24 novembre 2025], [
     - Ajout du timer dans le BLoC
-    - Événements basés sur le temps
-    - Structure du rapport Typst
+    - Gestion "Time-based events"
   ],
   [25 novembre - 1 décembre 2025], [
     - Intégration des capteurs (accéléromètre)
@@ -44,7 +43,6 @@ Le document est à trouver dans le dossier de rendu du projet.
   ],
   [7 décembre 2025], [
     - Préchargement des animations (cache)
-    - Suppression de code mort
     - Fonctionnalité de sommeil avec capteur de lumière
     - Rédaction du rapport
   ],
@@ -53,7 +51,6 @@ Le document est à trouver dans le dossier de rendu du projet.
     - Interface du jeu (rules, won, lost views)
     - Gestion des cacas
     - Animation de sommeil
-    - Ajout de l'image du Tamagotchi
     - Rédaction du rapport
   ],
   [11 décembre 2025], [
@@ -66,14 +63,14 @@ Le document est à trouver dans le dossier de rendu du projet.
   ],
   [12 décembre 2025], [
     - Internationalisation (i18n)
-    - Demande de permissions
+    - Demande de permissions (android)
     - Animation de nourrissage
     - Rédaction du rapport
     - Traductions
   ],
   [13 décembre 2025], [
     - Passage à HealthKit et Health Connect pour le podomètre
-    - Implémentation du nom et de la mort
+    - Implémentation du début et fin de vie du Tamagotchi
     - Modification des priorités des événements
     - Rédaction du rapport
   ],
