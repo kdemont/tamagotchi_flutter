@@ -1,5 +1,5 @@
 = Abstract
-PetSim est le prototype d'une application mobile développée en Flutter qui simule un animal de compagnie virtuel. L'utilisateur peut interagir avec son animal virtuel en le nourrissant, en jouant avec lui et en veillant à son bien-être. L'application s'inspire des concepts du phénomène Tamagotchi, petit appareil électronique populaire dans les années 1990 et début 2000, où les utilisateurs devaient prendre soin d'un animal virtuel.#footnote[https://fr.wikipedia.org/wiki/Tamagotchi]
+PetSim est le prototype d'une application mobile développée en Flutter qui simule un animal de compagnie virtuel. L'utilisateur peut interagir avec son animal virtuel en le nourrissant, en jouant avec lui et en veillant à son bien-être. L'application s'inspire des concepts du phénomène Tamagotchi, petit appareil électronique populaire dans les années 1990 et début 2000, où les utilisateurs devaient prendre soin d'un animal virtuel.#footnote[@tamagotchi-wiki]
 
 Il était notament possible de:
 - Nourrir l'animal

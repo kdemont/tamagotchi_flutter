@@ -42,9 +42,9 @@ Sophie est une professionnelle créative qui travaille principalement depuis che
 - Que l'application contienne trop de publicités ou d'achats in-app
 
 *Références (alternatives actuelles)*
-- Pokémon GO (pour l'aspect compagnon virtuel moderne)
-- Finch (application de bien-être avec compagnon virtuel)
-- Applications de relaxation comme Calm ou Headspace
+- Pokémon GO (pour l'aspect compagnon virtuel moderne)#footnote[@pokemon-go]
+- Finch (application de bien-être avec compagnon virtuel)#footnote[@finch]
+- Applications de relaxation comme Calm#footnote[@calm] ou Headspace#footnote[@headspace]
 
 === Persona 2 : Lucas
 
@@ -55,7 +55,7 @@ Sophie est une professionnelle créative qui travaille principalement depuis che
   image("../images/lucas.jpg", width: 94%),
   [
     - Âge : 14 ans
-    - Activité : Collégien (3ème année)
+    - Activité : Écolier
     - Situation familiale : Vit avec ses parents et sa petite sœur
     - Lieu de domicile : Genève
     - Lieu de travail/étude : Collège du quartier
@@ -89,10 +89,10 @@ Lucas est un adolescent curieux et connecté qui passe beaucoup de temps sur son
 - Ne pas comprendre comment débloquer certains succès
 
 *Références (alternatives actuelles)*
-- Roblox (pour l'aspect social et personnalisation)
-- Brawl Stars (jeux mobiles avec progression)
-- My Talking Tom (compagnon virtuel moderne)
-- Duolingo (pour le système de streak et gamification)
+- Roblox (pour l'aspect social et personnalisation)#footnote[@roblox]
+- Brawl Stars (jeux mobiles avec progression)#footnote[@brawl-stars]
+- My Talking Tom (compagnon virtuel moderne)#footnote[@my-talking-tom]
+- Duolingo (pour le système de streak et gamification)#footnote[@duolingo]
 
 == Scenario
 Nous avons défini un scénario simple pour illustrer comment un utilisateur pourrait interagir avec notre application Tamagotchi au cours d'une journée typique. Il s'agit ici de la découverte de l'application par Lucas.
