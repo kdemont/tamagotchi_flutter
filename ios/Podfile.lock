@@ -1,8 +1,12 @@
 PODS:
   - ambient_light (0.0.1):
     - Flutter
+  - device_info_plus (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
-  - pedometer (0.0.1):
+  - health (13.2.1):
+    - Flutter
+  - permission_handler_apple (9.3.0):
     - Flutter
   - sensors_plus (0.0.1):
     - Flutter
@@ -12,18 +16,24 @@ PODS:
 
 DEPENDENCIES:
   - ambient_light (from `.symlinks/plugins/ambient_light/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
-  - pedometer (from `.symlinks/plugins/pedometer/ios`)
+  - health (from `.symlinks/plugins/health/ios`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
 
 EXTERNAL SOURCES:
   ambient_light:
     :path: ".symlinks/plugins/ambient_light/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   Flutter:
     :path: Flutter
-  pedometer:
-    :path: ".symlinks/plugins/pedometer/ios"
+  health:
+    :path: ".symlinks/plugins/health/ios"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
   sensors_plus:
     :path: ".symlinks/plugins/sensors_plus/ios"
   shared_preferences_foundation:
@@ -31,11 +41,13 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   ambient_light: 4257c4811ce099c08f60ac036edd942d46fb2444
+  device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  pedometer: 1c5eaab0c6bce8eb7651f7095553b5081c9d06ed
+  health: e310387222e199d4b3261337490a67aaff6d18eb
+  permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
   sensors_plus: 6a11ed0c2e1d0bd0b20b4029d3bad27d96e0c65b
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
 
-PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
+PODFILE CHECKSUM: e30f02f9d1c72c47bb6344a0a748c9d268180865
 
 COCOAPODS: 1.16.2
