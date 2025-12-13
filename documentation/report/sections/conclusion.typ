@@ -1,0 +1,3 @@
+= Conclusion
+
+Le développement de cette application Tamagotchi a permis d'explorer diverses techniques de programmation mobile avec Flutter, ainsi que l'intégration de capteurs matériels pour enrichir l'expérience utilisateur. L'utilisation de Lottie pour les animations a offert une solution performante et visuellement attrayante, tandis que la gestion de l'état avec le pattern BLoC a assuré une architecture robuste et maintenable.

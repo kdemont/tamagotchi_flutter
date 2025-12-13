@@ -1,9 +1,18 @@
 // Configuration du document
 #set document(
   title: "AddMoApp - Rapport de projet",
-  author: "Killian Demont & Robin Zweifel",
+  author: "Kilian Demont & Robin Zweifel",
   date: auto,
 )
+
+// Configuration des footnotes (doit être avant tout contenu)
+#show footnote.entry: set text(size: 9pt)
+
+// Chargement de la bibliographie
+#show: doc => {
+  set bibliography(title: "Bibliographie")
+  doc
+}
 
 // Mise en page
 #set page(
@@ -29,7 +38,7 @@
       #grid(
         columns: (1fr, 1fr),
         align: (left, right),
-        [#datetime.today().display()],
+        [#datetime.today().display("[day].[month].[year]")],
         counter(page).display("1")
       )
     ]
@@ -40,7 +49,7 @@
 #set text(
   font: "New Computer Modern",
   size: 11pt,
-  lang: "en",
+  lang: "fr",
 )
 
 #set par(
@@ -50,6 +59,11 @@
 
 // En-têtes
 #set heading(numbering: "1.1")
+#show heading: it => {
+  it
+  v(0.3em)
+}
+#set footnote.entry(separator: line(length: 30%, stroke: 0.5pt))
 
 // Page de titre
 #align(center)[
@@ -82,4 +96,24 @@
 #pagebreak()
 
 // Corps du rapport
+#include "sections/abstract.typ"
+#pagebreak()
+#outline()
+#pagebreak()
 #include "sections/introduction.typ"
+#pagebreak()
+#include "sections/ux.typ"
+#pagebreak()
+#include "sections/evaluations.typ"
+#pagebreak()
+#include "sections/technique.typ"
+#pagebreak()
+#include "sections/tests.typ"
+#pagebreak()
+#include "sections/futur_du_travail.typ"
+#pagebreak()
+#include "sections/conclusion.typ"
+#pagebreak()
+#bibliography("references.yml", style: "apa")
+#pagebreak()
+#include "sections/annexes.typ"

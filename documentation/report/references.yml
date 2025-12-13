@@ -1,0 +1,73 @@
+tamagotchi-wiki:
+  type: Web
+  title: "Tamagotchi"
+  author: "Wikipédia"
+  url: https://fr.wikipedia.org/wiki/Tamagotchi
+  date: 2025-01-01
+
+flutter-docs:
+  type: Web
+  title: "Flutter Documentation"
+  url: https://flutter.dev/docs
+  date: 2025
+
+pokemon-go:
+  type: Web
+  title: "Pokémon GO"
+  author: "Niantic"
+  url: https://pokemongolive.com/
+  date: 2016
+
+finch:
+  type: Web
+  title: "Finch Self Care"
+  author: "Finch Technologies, Inc."
+  url: https://finchcare.com/
+  date: 2021
+
+calm:
+  type: Web
+  title: "Calm"
+  author: "Calm.com, Inc."
+  url: https://www.calm.com/
+  date: 2012
+
+headspace:
+  type: Web
+  title: "Headspace"
+  author: "Headspace Inc."
+  url: https://www.headspace.com/
+  date: 2010
+
+roblox:
+  type: Web
+  title: "Roblox"
+  author: "Roblox Corporation"
+  url: https://www.roblox.com/
+  date: 2006
+
+brawl-stars:
+  type: Web
+  title: "Brawl Stars"
+  author: "Supercell"
+  url: https://supercell.com/en/games/brawlstars/
+  date: 2018
+
+my-talking-tom:
+  type: Web
+  title: "My Talking Tom"
+  author: "Outfit7 Limited"
+  url: https://outfit7.com/apps/my-talking-tom/
+  date: 2013
+
+duolingo:
+  type: Web
+  title: "Duolingo"
+  author: "Duolingo, Inc."
+  url: https://www.duolingo.com/
+  date: 2011
+
+chatGPT:
+  type: Web
+  title: "chatGPT"
+  url: https://chat.openai.com/
