@@ -42,7 +42,3 @@ L'utilisateur peut interagir directement avec son compagnon via plusieurs mécan
 
 - *Mort du Tamagotchi* : survient lorsque toutes les caractéristiques atteignent leur minimum
 - *Attaque de poux* : événement déclenché par une propreté insuffisante
-
-=== Système de succès
-
-Un système d'achievements permet de suivre la progression de l'utilisateur à travers différents objectifs (nourrir X fois, atteindre un certain âge, etc.)
