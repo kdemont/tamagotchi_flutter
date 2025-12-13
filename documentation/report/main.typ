@@ -108,6 +108,10 @@
 #pagebreak()
 #include "sections/technique.typ"
 #pagebreak()
+#include "sections/futur_du_travail.typ"
+#pagebreak()
+#include "sections/conclusion.typ"
+#pagebreak()
 #bibliography("references.yml", style: "apa")
 #pagebreak()
 #include "sections/annexes.typ"
