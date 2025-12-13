@@ -1,5 +1,5 @@
 = Évaluations
-Afin de mesurer l'efficacité et la qualité de l'application PetSim, deux types d'évaluations ont été réalisés : des tests utilisateurs et le remplissage du questionnaire SUS (System Usability Scale). Ces évaluations visent à recueillir des retours qualitatifs (à défaut d'être quantitatifs car nous n'avons pas eu l'occasion de tester sur un grand nombre dde personnes)
+Afin de mesurer l'efficacité et la qualité de l'application PetSim, deux types d'évaluations ont été réalisés : des tests utilisateurs et le remplissage du questionnaire SUS (System Usability Scale). Ces évaluations visent à recueillir des retours qualitatifs (à défaut d'être quantitatifs car nous n'avons pas eu l'occasion de tester sur un grand nombre de personnes).
 == Profil des testeurs
 Les deux profils de testeurs ont été choisis pour représenter au mieux les personnas définis lors de la phase de conception. Voici une brève description de chaque testeur :
 === 1er testeur
@@ -24,10 +24,10 @@ Tâche 3 : Interaction tactile
 - _Caressez votre Tamagotchi avec vos doigts_
 
 Tâche 4 : Mini-jeu
-- _Trouvez et jouez une partie du jeu de devinette_
+- _Trouvez et jouez une partie du jeu de devinette de nombre_
 
 Tâche 5 : Utilisation des capteurs
-- _Provoquez ou attendez une attaque de poux, puis secouez le téléphone pour les éliminer_
+- _Provoquez ou attendez une attaque de poux, puis éliminez-les_
 == Tableau des résultats
 
 #figure(

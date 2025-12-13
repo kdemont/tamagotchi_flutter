@@ -1,6 +1,6 @@
 = Technique
 
-Cette section décrit les choix techniques et l'architecture mise en place pour le développement de l'application Tamagotchi Flutter, un animal de compagnie virtuel interactif fonctionnant sur Android et iOS.
+Cette section décrit les choix techniques et l'architecture mise en place pour le développement de l'application PetSim, un animal de compagnie virtuel interactif fonctionnant sur Android et iOS.
 
 == Choix architecturaux
 
@@ -222,13 +222,25 @@ Nous avons choisi cette bibliothèque pour détecter les conditions de luminosit
 
 Cette bibliothque est la seule disponible (de ce que nous avons pu trouver) pour Flutter offrant cette fonctionnalité pour Android et iOS (la plupart ne le font que pour Android). Elle est également simple à intégrer et à utiliser, avec une documentation adéquate.
 
+=== Health
+
+La bibliothèque Health pour Flutter fournit un accès unifié aux données de santé des appareils mobiles via Apple HealthKit (iOS) et Google Health Connect (Android), incluant le suivi des pas.
+
+Nous avons intégré cette bibliothèque pour créer une mécanique de promenade virtuelle avec le Tamagotchi. Le système fonctionne de manière passive en arrière-plan : chaque fois que l'utilisateur complète une tranche de 1000 pas (configurable via `TamagotchiConfig.stepsPerWalk`), le Tamagotchi reçoit automatiquement un bonus d'énergie (+10) et de bonheur (+15). Cette fonctionnalité encourage l'activité physique réelle de l'utilisateur tout en enrichissant l'expérience de jeu.
+
+D'un point de vue technique, le `HomeBloc` écoute le flux de données du podomètre via l'événement `UpdateSteps`, qui met à jour les champs `totalSteps` et `lastStepCount` du modèle Tamagotchi. Lorsque la différence entre le nombre de pas total et le dernier palier atteint dépasse 1000, les récompenses sont automatiquement attribuées et le compteur `lastStepCount` est incrémenté.
+
+Cette bibliothèque bénéficie de la mention "Flutter Favorite" sur pub.dev, attestant de sa qualité et de sa fiabilité. Elle offre un bon support sur Android et iOS, bien qu'elle nécessite des permissions spécifiques pour accéder aux données de santé sur chaque plateforme.
+
 === Slang
 
 Slang est une bibliothèque Flutter dédiée à l'internationalisation (i18n) et à la localisation (l10n) des applications mobiles.
 
-Nous avons choisi Slang pour gérer l'internationalisation de notre application Tamagotchi Flutter, car elle offre une approche moderne et flexible pour la gestion des traductions et des ressources linguistiques. Slang permet de structurer facilement les fichiers de traduction (au format JSON), de gérer les pluriels et les formats spécifiques à chaque langue. De plus, elle est bien maintenue et dispose d'une communauté active, ce qui garantit un bon support et des mises à jour régulières.
+Nous avons choisi Slang pour gérer l'internationalisation de notre application PetSim Flutter, car elle offre une approche moderne et flexible pour la gestion des traductions et des ressources linguistiques. Slang permet de structurer facilement les fichiers de traduction (au format JSON), de gérer les pluriels et les formats spécifiques à chaque langue. De plus, elle est bien maintenue et dispose d'une communauté active, ce qui garantit un bon support et des mises à jour régulières.
 
 Sa facilité d'utilisation et son guide de démarrage clair en font un choix idéal pour intégrer l'internationalisation dans notre application.
+
+
 
 == Problèmes rencontrés
 

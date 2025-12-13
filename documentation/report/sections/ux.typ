@@ -70,7 +70,7 @@ _"J'aime bien les jeux simples où on peut débloquer des trucs. Les Tamagotchis
 Lucas est un adolescent curieux et connecté qui passe beaucoup de temps sur son smartphone. Il découvre le concept de Tamagotchi pour la première fois mais est attiré par l'idée d'un compagnon virtuel qu'il peut personnaliser et faire évoluer. Il aime les jeux qui proposent des objectifs à atteindre et des récompenses à débloquer. Lucas est également actif physiquement (football le mercredi et samedi) et apprécie que ses activités réelles puissent avoir un impact dans ses jeux mobiles.
 
 *Objectifs*
-- S'amuser pendant les pauses au collège et les trajets
+- S'amuser pendant les pauses à l'école et les trajets
 - Débloquer tous les succès et achievements
 - Montrer ses progrès à ses amis
 - Découvrir toutes les fonctionnalités cachées
