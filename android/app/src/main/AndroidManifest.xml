@@ -2,6 +2,10 @@
 <!--    <uses-permission android:name="android.permission.WAKE_LOCK" />-->
 <!--    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />-->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+
+    <!-- Health Connect permissions for step count -->
+    <uses-permission android:name="android.permission.health.READ_STEPS"/>
+    <uses-permission android:name="android.permission.health.WRITE_STEPS"/>
     <application
         android:label="tamagotchi_flutter"
         android:name="${applicationName}"
@@ -44,5 +48,7 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- Required for Health Connect -->
+        <package android:name="com.google.android.apps.healthdata" />
     </queries>
 </manifest>

@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -12,6 +14,11 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>fr</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>tamagotchi_flutter</string>
 	<key>CFBundlePackageType</key>
@@ -24,6 +31,20 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Nous avons besoin d'accéder à la caméra pour mesurer la lumière ambiante afin de détecter quand votre Tamagotchi doit dormir.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Nous avons besoin d'accéder à vos données de santé pour suivre vos pas quotidiens et récompenser votre Tamagotchi lorsque vous marchez.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Nous synchronisons vos pas avec Apple Health pour encourager votre Tamagotchi à être actif.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Cette application utilise l'accéléromètre pour détecter les secousses du téléphone et interagir avec votre Tamagotchi.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>processing</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -40,19 +61,6 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-    <key>NSMotionUsageDescription</key>
-    <string>Cette application utilise l'accéléromètre pour détecter les secousses du téléphone et interagir avec votre Tamagotchi.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Nous avons besoin d'accéder à la caméra pour mesurer la lumière ambiante afin de détecter quand votre Tamagotchi doit dormir.</string>
-	<key>CFBundleLocalizations</key>
-	<array>
-		<string>en</string>
-		<string>fr</string>
 	</array>
 </dict>
 </plist>

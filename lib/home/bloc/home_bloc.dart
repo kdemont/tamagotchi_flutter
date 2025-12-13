@@ -6,7 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ambient_light/ambient_light.dart';
 import 'package:sensors_plus/sensors_plus.dart';
-import 'package:pedometer/pedometer.dart';
+import 'package:health/health.dart';
 
 import '../../config/tamagotchi_config.dart';
 import '../../models/tamagotchi.dart';
@@ -35,8 +35,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   StreamSubscription<AccelerometerEvent>? _accelSub;
   final List<int> _timestamps = [];
 
-  // Pedometer subscription for step counting
-  StreamSubscription? _pedometerSub;
+  // Health package for step counting
+  final Health _health = Health();
 
   // Light sensor for sleep detection
   // On iOS, use front camera to measure light
@@ -88,26 +88,26 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     _lightSub = null;
   }
 
-  void startPedometer() {
-    if (_pedometerSub != null) return;
+  Future<void> initializeHealthPermissions() async {
     try {
-      _pedometerSub = Pedometer.stepCountStream.listen(
-        (StepCount event) {
-          add(UpdateSteps(event.steps));
-        },
-        onError: (error) {
-          print('[HomeBloc] Pedometer error: $error');
-        },
-      );
+      print('[HomeBloc] Requesting health permissions...');
+
+      // Request authorization for step data
+      final types = [HealthDataType.STEPS];
+      bool authorized = await _health.requestAuthorization(types);
+
+      if (!authorized) {
+        print('[HomeBloc] ❌ Health permissions denied');
+        return;
+      }
+
+      print('[HomeBloc] ✅ Health permissions granted');
     } catch (e) {
-      print('[HomeBloc] Pedometer not available: $e');
+      print('[HomeBloc] ❌ Health not available: $e');
     }
   }
 
-  void stopPedometer() {
-    _pedometerSub?.cancel();
-    _pedometerSub = null;
-  }
+
 
   Timer? _ticker;
 
@@ -133,7 +133,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<Pet>(_onPet);
     _startTicker();
     startLightSensor(); // Start listening to light sensor
-    startPedometer(); // Start listening to step counter
+    initializeHealthPermissions(); // Request health permissions on startup
   }
 
   void _startTicker({Duration? interval}) {
@@ -147,7 +147,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     _ticker?.cancel();
     stopAccelerometer();
     stopLightSensor();
-    stopPedometer();
     return super.close();
   }
 
@@ -164,10 +163,66 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           now.month == lastDate.month &&
           now.day == lastDate.day;
       if (!isSameDay) {
-        // Reset step count for new day
-        updatedTama = tama.copyWith(lastStepCount: 0, lastWalkDate: now);
+        // Reset step count and walks for new day
+        updatedTama = tama.copyWith(
+          lastStepCount: 0,
+          totalWalks: 0,
+          lastWalkDate: now,
+        );
         await repository.saveTamagotchi(updatedTama);
       }
+    }
+
+    // Check for walk rewards based on current daily steps
+    // This ensures rewards are applied even if app was closed
+    try {
+      final midnight = DateTime(now.year, now.month, now.day);
+
+      final types = [HealthDataType.STEPS];
+      final healthData = await _health.getHealthDataFromTypes(
+        startTime: midnight,
+        endTime: now,
+        types: types,
+      );
+
+      // Sum up all step data points
+      int dailySteps = 0;
+      for (var data in healthData) {
+        if (data.value is NumericHealthValue) {
+          dailySteps += (data.value as NumericHealthValue).numericValue.toInt();
+        }
+      }
+      final newCompletedWalks =
+          dailySteps ~/ TamagotchiConfig.stepsPerWalk;
+      final walksToReward = newCompletedWalks - updatedTama.totalWalks;
+
+      if (walksToReward > 0) {
+        // Apply missed walk bonuses
+        updatedTama = updatedTama.copyWith(
+          energy: TamagotchiConfig.clampStat(
+            updatedTama.energy +
+                (walksToReward * TamagotchiConfig.walkEnergyGain) -
+                (walksToReward * TamagotchiConfig.walkEnergyLoss),
+          ),
+          happiness: TamagotchiConfig.clampStat(
+            updatedTama.happiness +
+                (walksToReward * TamagotchiConfig.walkHappinessGain),
+          ),
+          lastStepCount: dailySteps,
+          totalWalks: newCompletedWalks,
+          lastWalkDate: now,
+        );
+        await repository.saveTamagotchi(updatedTama);
+      } else if (dailySteps != updatedTama.lastStepCount) {
+        // Just update step count without rewards
+        updatedTama = updatedTama.copyWith(
+          lastStepCount: dailySteps,
+          lastWalkDate: now,
+        );
+        await repository.saveTamagotchi(updatedTama);
+      }
+    } catch (e) {
+      print('[HomeBloc] Could not check steps on load: $e');
     }
 
     // Apply ticks that occurred while the app was closed/backgrounded
@@ -589,52 +644,59 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final currentState = state as HomeLoaded;
     final current = currentState.tamagotchi;
 
-    // Calculate steps since last update
-    final stepsSinceLastUpdate = event.stepCount - current.lastStepCount;
+    final dailySteps = event.stepCount;
 
-    // Check if we completed any walks
-    if (stepsSinceLastUpdate >= TamagotchiConfig.stepsPerWalk) {
-      final completedWalks =
-          stepsSinceLastUpdate ~/ TamagotchiConfig.stepsPerWalk;
+    // Calculate the number of walks completed
+    final currentWalkThreshold =
+        (current.totalWalks + 1) * TamagotchiConfig.stepsPerWalk;
 
-      // Apply walk bonuses
-      final updated = current.copyWith(
-        energy: TamagotchiConfig.clampStat(
-          current.energy +
-              (completedWalks * TamagotchiConfig.walkEnergyGain) -
-              (completedWalks * TamagotchiConfig.walkEnergyLoss),
-        ),
-        happiness: TamagotchiConfig.clampStat(
-          current.happiness +
-              (completedWalks * TamagotchiConfig.walkHappinessGain),
-        ),
-        lastStepCount: event.stepCount,
-        lastWalkDate: DateTime.now(),
-        totalWalks: current.totalWalks + completedWalks,
-        lastUpdateTime: DateTime.now(),
-      );
+    // Check if we completed a new walk
+    if (dailySteps >= currentWalkThreshold) {
+      final newCompletedWalks =
+          dailySteps ~/ TamagotchiConfig.stepsPerWalk;
+      final walksToReward = newCompletedWalks - current.totalWalks;
 
-      await repository.saveTamagotchi(updated);
-      emit(
-        currentState.copyWith(
-          tamagotchi: updated,
-          currentSteps: event.stepCount,
-        ),
-      );
-    } else {
-      // Just update the step count without applying bonuses
-      final updated = current.copyWith(
-        lastStepCount: event.stepCount,
-        lastWalkDate: DateTime.now(),
-      );
-      await repository.saveTamagotchi(updated);
-      emit(
-        currentState.copyWith(
-          tamagotchi: updated,
-          currentSteps: event.stepCount,
-        ),
-      );
+      if (walksToReward > 0) {
+        // Apply walk bonuses
+        final updated = current.copyWith(
+          energy: TamagotchiConfig.clampStat(
+            current.energy +
+                (walksToReward * TamagotchiConfig.walkEnergyGain) -
+                (walksToReward * TamagotchiConfig.walkEnergyLoss),
+          ),
+          happiness: TamagotchiConfig.clampStat(
+            current.happiness +
+                (walksToReward * TamagotchiConfig.walkHappinessGain),
+          ),
+          lastStepCount: dailySteps,
+          lastWalkDate: DateTime.now(),
+          totalWalks: newCompletedWalks,
+          lastUpdateTime: DateTime.now(),
+        );
+
+        await repository.saveTamagotchi(updated);
+        emit(
+          currentState.copyWith(
+            tamagotchi: updated,
+            currentSteps: dailySteps,
+          ),
+        );
+        return;
+      }
     }
+
+    // Just update the step count without applying bonuses
+    final updated = current.copyWith(
+      lastStepCount: dailySteps,
+      lastWalkDate: DateTime.now(),
+    );
+    await repository.saveTamagotchi(updated);
+    emit(
+      currentState.copyWith(
+        tamagotchi: updated,
+        currentSteps: dailySteps,
+      ),
+    );
   }
 
   void _onPet(Pet event, Emitter<HomeState> emit) {
