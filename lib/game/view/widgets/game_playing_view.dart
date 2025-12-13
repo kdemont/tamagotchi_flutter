@@ -122,7 +122,7 @@ class _GamePlayingViewState extends State<GamePlayingView> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Icon(Icons.arrow_upward, size: 20),
+                          const Icon(Icons.arrow_upward, size: 20), // TODO dynamic icon based on hint
                         ],
                       ),
                     )

@@ -49,7 +49,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           ? TamagotchiConfig.lightThresholdIOS
           : TamagotchiConfig.lightThresholdAndroid;
 
-  bool? _isSleeping; // prevent multiple sleep triggers
+  bool _isSleeping = false; // prevent multiple sleep triggers
 
   void startAccelerometer() {
     if (_accelSub != null) return;
@@ -131,6 +131,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<ResetPoopCount>(_onResetPoopCount);
     on<UpdateSteps>(_onUpdateSteps);
     on<Pet>(_onPet);
+    on<Dead>(_onDead);
+    on<CreateNewTamagotchi>(_onCreateNewTamagotchi);
     _startTicker();
     startLightSensor(); // Start listening to light sensor
     initializeHealthPermissions(); // Request health permissions on startup
@@ -247,6 +249,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         lastUpdateTime: now,
       );
       await repository.saveTamagotchi(updated);
+
+      if (updated.isDead) {
+        add(Dead(updated));
+      }
+
       // if after applying elapsed ticks the tama is infested, start accelerometer
       if (updated.state == VisualState.liceAttack) {
         startAccelerometer();
@@ -277,7 +284,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         hunger: TamagotchiConfig.clampStat(
           current.hunger + TamagotchiConfig.feedHungerGain,
         ),
-        happiness: TamagotchiConfig.clampStat(current.happiness + 5),
+        happiness: TamagotchiConfig.clampStat(current.happiness + 10),
         state: VisualState.eating,
         lastUpdateTime: DateTime.now(),
       );
@@ -298,6 +305,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         lastUpdateTime: DateTime.now(),
       );
       repository.saveTamagotchi(updated);
+
+      if (updated.isDead) {
+        add(Dead(updated));
+        return;
+      }
+
       emit(currentState.copyWith(tamagotchi: updated));
     }
   }
@@ -422,7 +435,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final current = currentState.tamagotchi;
 
       // Si le tamagotchi dort, il récupère de l'énergie et ne perd pas de stats
-      if (current.state == VisualState.sleeping) {
+      if (_isSleeping) {
         final newEnergy = TamagotchiConfig.clampStat(
           current.energy + TamagotchiConfig.sleepEnergyGain,
         );
@@ -459,6 +472,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         current.energy - TamagotchiConfig.energyDecayPerTick,
       );
 
+      final newCleanliness = TamagotchiConfig.clampStat(
+        current.cleanliness - TamagotchiConfig.cleanlinessDecayPerTick,
+      );
+
       // Use different happiness decay rates based on stress
       final int happinessDecay =
           (current.hunger < TamagotchiConfig.cryingThreshold ||
@@ -479,15 +496,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         hunger: newHunger,
         energy: newEnergy,
         happiness: newHappiness,
+        cleanliness: newCleanliness,
         lastUpdateTime: DateTime.now(),
       );
+
       repository.saveTamagotchi(updated);
+
+      if (updated.isDead) {
+        add(Dead(updated));
+        return;
+      }
+
       emit(currentState.copyWith(tamagotchi: updated));
     }
   }
 
   void _onAccel(AccelerometerEvent e) {
-    final g = sqrt(e.x * e.x + e.y * e.y + e.z * e.z) / TamagotchiConfig.gravity;
+    final g =
+        sqrt(e.x * e.x + e.y * e.y + e.z * e.z) / TamagotchiConfig.gravity;
     if (g > gThreshold) {
       final now = DateTime.now().millisecondsSinceEpoch;
       _timestamps.add(now);
@@ -511,16 +537,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       //   '[💡 Light] ${lux.toStringAsFixed(1)} lux ${lux < lightThreshold ? "🌙 DARK" : "☀️ BRIGHT"}',
       // );
 
-      _isSleeping ??= lux < lightThreshold;
-
-      if (lux < lightThreshold && !_isSleeping!) {
+      if (lux < lightThreshold && !_isSleeping) {
         // It's dark, trigger sleep if no higher priority event
         if (VisualState.canInterrupt(current.state, VisualState.sleeping)) {
           print('[😴 Sleep] Triggering sleep at ${lux.toStringAsFixed(1)} lux');
           _isSleeping = true;
           add(const Sleep());
         }
-      } else if (lux >= lightThreshold && _isSleeping!) {
+      } else if (lux >= lightThreshold && _isSleeping) {
         // Light is back, reset sleep flag
         print('[👁️ Wake] Waking up at ${lux.toStringAsFixed(1)} lux');
         _isSleeping = false;
@@ -549,6 +573,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         lastUpdateTime: DateTime.now(),
       );
       await repository.saveTamagotchi(updated);
+
+      if (updated.isDead) {
+        add(Dead(updated));
+        return;
+      }
+
       emit(currentState.copyWith(tamagotchi: updated));
     }
   }
@@ -717,5 +747,36 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     repository.saveTamagotchi(updated);
     emit(currentState.copyWith(tamagotchi: updated));
+  }
+
+  Future<void> _onCreateNewTamagotchi(
+    CreateNewTamagotchi event,
+    Emitter<HomeState> emit,
+  ) async {
+    final newTama = Tamagotchi.newWithName(event.name);
+    await repository.saveTamagotchi(newTama);
+
+    // Redémarrer les systèmes
+    _startTicker();
+    startLightSensor();
+    startPedometer();
+    _isSleeping = false;
+
+    emit(HomeLoaded(tamagotchi: newTama));
+  }
+
+  void _onDead(Dead event, Emitter<HomeState> emit) {
+    if (state is! HomeLoaded) return;
+
+    print('[TamagotchiBloc] Tamagotchi is DEAD!');
+    stopAccelerometer();
+    stopLightSensor();
+    stopPedometer();
+    _ticker?.cancel();
+
+    // Émettre l'état avec le tamagotchi mort
+    final currentState = state as HomeLoaded;
+    repository.saveTamagotchi(event.tamagotchi);
+    emit(currentState.copyWith(tamagotchi: event.tamagotchi));
   }
 }

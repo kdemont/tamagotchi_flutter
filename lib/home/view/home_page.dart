@@ -8,6 +8,7 @@ import 'package:tamagotchi_flutter/gen/strings.g.dart';
 import 'package:tamagotchi_flutter/utils/lottie_preloader.dart';
 // visual state info accessed through model; explicit import removed
 
+import '../../game_over/game_over_page.dart';
 import '../../models/visual_state.dart';
 import '../bloc/home_bloc.dart';
 import '../view_model/home_view_model.dart';
@@ -81,283 +82,306 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final viewModel = HomeViewModel(context.read<HomeBloc>());
 
-    return Scaffold(
-      //appBar: AppBar(title: const Text('Tamagotchi')),
-      body: Stack(
-        children: [
-          // Background image that covers the whole screen
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/background.png',
-              fit: BoxFit.cover,
+    return BlocListener<HomeBloc, HomeState>(
+      listener: (context, state) {
+        // Navigate to game over when tamagotchi dies
+        if (state is HomeLoaded && state.tamagotchi.isDead) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder:
+                  (_) => GameOverPage(
+                    tamagotchiName: state.tamagotchi.name,
+                    age: state.tamagotchi.age,
+                  ),
             ),
-          ),
+          );
+        }
+      },
+      child: Scaffold(
+        //appBar: AppBar(title: const Text('Tamagotchi')),
+        body: Stack(
+          children: [
+            // Background image that covers the whole screen
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/background.png',
+                fit: BoxFit.cover,
+              ),
+            ),
 
-          // Foreground content with stats, centered Lottie and actions
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: BlocBuilder<HomeBloc, HomeState>(
-                      builder: (context, state) {
-                        if (state is HomeLoaded) {
-                          final tamagotchi = state.tamagotchi;
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Stats in a 2-column grid (two per row)
-                              GridView.count(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 8,
-                                mainAxisSpacing: 8,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                // childAspectRatio tuned so each item is wide enough for the bar
-                                childAspectRatio: 3.2,
-                                children: [
-                                  StatBar(
-                                    label: t.home.stats.hunger,
-                                    value: tamagotchi.hunger,
-                                    icon: Icons.restaurant_menu,
-                                  ),
-                                  StatBar(
-                                    label: t.home.stats.energy,
-                                    value: tamagotchi.energy,
-                                    icon: Icons.bolt,
-                                  ),
-                                  StatBar(
-                                    label: t.home.stats.happiness,
-                                    value: tamagotchi.happiness,
-                                    icon: Icons.favorite,
-                                  ),
-                                  StatBar(
-                                    label: t.home.stats.hygiene,
-                                    value: tamagotchi.cleanliness,
-                                    icon: Icons.cleaning_services,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 12),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        tamagotchi.name,
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.titleLarge?.copyWith(
-                                          color: Color(0xFF9B7C47),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 16),
-                                      Text(
-                                        t.home.age(age: tamagotchi.age),
-                                        style: const TextStyle(
-                                          color: Color(0xFF654B1F),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  // Step counter
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
+            // Foreground content with stats, centered Lottie and actions
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: BlocBuilder<HomeBloc, HomeState>(
+                        builder: (context, state) {
+                          if (state is HomeLoaded) {
+                            final tamagotchi = state.tamagotchi;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Stats in a 2-column grid (two per row)
+                                GridView.count(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 8,
+                                  mainAxisSpacing: 8,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  // childAspectRatio tuned so each item is wide enough for the bar
+                                  childAspectRatio: 3.2,
+                                  children: [
+                                    StatBar(
+                                      label: t.home.stats.hunger,
+                                      value: tamagotchi.hunger,
+                                      icon: Icons.restaurant_menu,
                                     ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.8,
-                                      ),
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                        color: const Color(0xFF9B7C47),
-                                        width: 2,
-                                      ),
+                                    StatBar(
+                                      label: t.home.stats.energy,
+                                      value: tamagotchi.energy,
+                                      icon: Icons.bolt,
                                     ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
+                                    StatBar(
+                                      label: t.home.stats.happiness,
+                                      value: tamagotchi.happiness,
+                                      icon: Icons.favorite,
+                                    ),
+                                    StatBar(
+                                      label: t.home.stats.hygiene,
+                                      value: tamagotchi.cleanliness,
+                                      icon: Icons.cleaning_services,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
                                       children: [
-                                        const Icon(
-                                          Icons.directions_walk,
-                                          color: Color(0xFF9B7C47),
-                                          size: 18,
-                                        ),
-                                        const SizedBox(width: 4),
                                         Text(
-                                          '${state.currentSteps}',
+                                          tamagotchi.name,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleLarge?.copyWith(
+                                            color: Color(0xFF9B7C47),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 16),
+                                        Text(
+                                          t.home.age(
+                                            age:
+                                                tamagotchi.age,
+                                          ),
                                           style: const TextStyle(
                                             color: Color(0xFF654B1F),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
-
-                              // Centered Lottie animation takes available space
-                              Expanded(
-                                child: Stack(
-                                  children: [
-                                    // Tamagotchi animation (hidden in cleaning mode)
-                                    // Wrapped in PetDetector for petting interaction
-                                    if (!state.isCleaningMode)
-                                      PetDetector(
-                                        enabled:
-                                            tamagotchi.state ==
-                                            VisualState.idle,
-                                        child: Center(
-                                          child: _AnimationSequencePlayer(
-                                            key: ValueKey(tamagotchi.state),
-                                            animations:
-                                                tamagotchi.state.animations,
-                                            width:
-                                                MediaQuery.of(
-                                                  context,
-                                                ).size.width *
-                                                0.6,
-                                            onSequenceComplete:
-                                                () =>
-                                                    viewModel
-                                                        .nonRepeatingEventComplete(),
-                                          ),
+                                    // Step counter
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.8,
+                                        ),
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(
+                                          color: const Color(0xFF9B7C47),
+                                          width: 2,
                                         ),
                                       ),
-                                    // "Frotte !" text in cleaning mode
-                                    if (state.isCleaningMode)
-                                      Center(
-                                        child: Text(
-                                          t.home.cleaning.instruction,
-                                          style: const TextStyle(
-                                            fontSize: 48,
-                                            fontWeight: FontWeight.bold,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.directions_walk,
                                             color: Color(0xFF9B7C47),
+                                            size: 18,
                                           ),
-                                        ),
-                                      ),
-                                    // Poop overlay
-                                    PoopOverlay(
-                                      poopCount: tamagotchi.poopCount,
-                                      isCleaningMode: state.isCleaningMode,
-                                      globalRubCount: state.globalRubCount,
-                                    ),
-                                    // Exit cleaning mode button
-                                    if (state.isCleaningMode)
-                                      Positioned(
-                                        top: 10,
-                                        right: 10,
-                                        child: ElevatedButton(
-                                          onPressed:
-                                              () => context
-                                                  .read<HomeBloc>()
-                                                  .add(const ExitCleaning()),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.red,
-                                            foregroundColor: Colors.white,
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 16,
-                                              vertical: 8,
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            '${state.currentSteps}',
+                                            style: const TextStyle(
+                                              color: Color(0xFF654B1F),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
                                             ),
                                           ),
-                                          child: Text(t.home.cleaning.exit),
-                                        ),
+                                        ],
                                       ),
+                                    ),
                                   ],
                                 ),
-                              ),
 
-                              // Action buttons at the bottom: round icon buttons for Feed and Sleep
-                              // Désactivés si un événement plus prioritaire est en cours
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed:
-                                        VisualState.canInterrupt(
-                                              tamagotchi.state,
-                                              VisualState.eating,
-                                            )
-                                            ? viewModel.feed
-                                            : null,
-                                    style: ElevatedButton.styleFrom(
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(14),
-                                      backgroundColor: Colors.orangeAccent,
-                                      disabledBackgroundColor:
-                                          Colors.grey.shade400,
-                                      minimumSize: const Size(56, 56),
-                                    ),
-                                    child: Icon(
-                                      Icons.restaurant_menu,
-                                      color:
+                                // Centered Lottie animation takes available space
+                                Expanded(
+                                  child: Stack(
+                                    children: [
+                                      // Tamagotchi animation (hidden in cleaning mode)
+                                      // Wrapped in PetDetector for petting interaction
+                                      if (!state.isCleaningMode)
+                                        PetDetector(
+                                          enabled:
+                                              tamagotchi.state ==
+                                              VisualState.idle,
+                                          child: Center(
+                                            child: _AnimationSequencePlayer(
+                                              key: ValueKey(tamagotchi.state),
+                                              animations:
+                                                  tamagotchi.state.animations,
+                                              width:
+                                                  MediaQuery.of(
+                                                    context,
+                                                  ).size.width *
+                                                  0.6,
+                                              onSequenceComplete:
+                                                  () =>
+                                                      viewModel
+                                                          .nonRepeatingEventComplete(),
+                                            ),
+                                          ),
+                                        ),
+                                      // "Frotte !" text in cleaning mode
+                                      if (state.isCleaningMode)
+                                        Center(
+                                          child: Text(
+                                            t.home.cleaning.instruction,
+                                            style: const TextStyle(
+                                              fontSize: 48,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color(0xFF9B7C47),
+                                            ),
+                                          ),
+                                        ),
+                                      // Poop overlay
+                                      PoopOverlay(
+                                        poopCount: tamagotchi.poopCount,
+                                        isCleaningMode: state.isCleaningMode,
+                                        globalRubCount: state.globalRubCount,
+                                      ),
+                                      // Exit cleaning mode button
+                                      if (state.isCleaningMode)
+                                        Positioned(
+                                          top: 10,
+                                          right: 10,
+                                          child: ElevatedButton(
+                                            onPressed:
+                                                () => context
+                                                    .read<HomeBloc>()
+                                                    .add(const ExitCleaning()),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                              foregroundColor: Colors.white,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 8,
+                                                  ),
+                                            ),
+                                            child: Text(t.home.cleaning.exit),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+
+                                // Action buttons at the bottom: round icon buttons for Feed and Sleep
+                                // Désactivés si un événement plus prioritaire est en cours
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed:
                                           VisualState.canInterrupt(
                                                 tamagotchi.state,
                                                 VisualState.eating,
                                               )
-                                              ? Colors.white
-                                              : Colors.grey.shade600,
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed:
-                                        // Allow cleaning if there are poops OR if can interrupt
-                                        (tamagotchi.poopCount > 0 ||
-                                                VisualState.canInterrupt(
+                                              ? viewModel.feed
+                                              : null,
+                                      style: ElevatedButton.styleFrom(
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.all(14),
+                                        backgroundColor: Colors.orangeAccent,
+                                        disabledBackgroundColor:
+                                            Colors.grey.shade400,
+                                        minimumSize: const Size(56, 56),
+                                      ),
+                                      child: Icon(
+                                        Icons.restaurant_menu,
+                                        color:
+                                            VisualState.canInterrupt(
                                                   tamagotchi.state,
-                                                  VisualState.cleaning,
-                                                ))
-                                            ? viewModel.clean
-                                            : null,
-                                    style: ElevatedButton.styleFrom(
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(14),
-                                      backgroundColor: Colors.deepPurpleAccent,
-                                      disabledBackgroundColor:
-                                          Colors.grey.shade400,
-                                      minimumSize: const Size(56, 56),
+                                                  VisualState.eating,
+                                                )
+                                                ? Colors.white
+                                                : Colors.grey.shade600,
+                                      ),
                                     ),
-                                    child: Icon(
-                                      Icons.cleaning_services,
-                                      color:
+                                    ElevatedButton(
+                                      onPressed:
+                                          // Allow cleaning if there are poops OR if can interrupt
                                           (tamagotchi.poopCount > 0 ||
                                                   VisualState.canInterrupt(
                                                     tamagotchi.state,
                                                     VisualState.cleaning,
                                                   ))
-                                              ? Colors.white
-                                              : Colors.grey.shade600,
+                                              ? viewModel.clean
+                                              : null,
+                                      style: ElevatedButton.styleFrom(
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.all(14),
+                                        backgroundColor:
+                                            Colors.deepPurpleAccent,
+                                        disabledBackgroundColor:
+                                            Colors.grey.shade400,
+                                        minimumSize: const Size(56, 56),
+                                      ),
+                                      child: Icon(
+                                        Icons.cleaning_services,
+                                        color:
+                                            (tamagotchi.poopCount > 0 ||
+                                                    VisualState.canInterrupt(
+                                                      tamagotchi.state,
+                                                      VisualState.cleaning,
+                                                    ))
+                                                ? Colors.white
+                                                : Colors.grey.shade600,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
-                        }
+                                  ],
+                                ),
+                              ],
+                            );
+                          }
 
-                        return const Center(child: CircularProgressIndicator());
-                      },
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          _onNavTap(index);
-        },
+          ],
+        ),
+        bottomNavigationBar: BottomNavBar(
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            _onNavTap(index);
+          },
+        ),
       ),
     );
   }

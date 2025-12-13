@@ -56,5 +56,18 @@
       "description": "You'll certainly succeed next time.",
       "returnHome": "Return home"
     }
+  },
+  "gameOver": {
+    "title": "Rest in peace",
+    "lived": "Lived $age day(s)",
+    "message": "Your companion has joined the stars.\nBut a new friend may be waiting for you...",
+    "newGame": "Adopt a new Tamagotchi"
+  },
+  "naming": {
+    "welcome": "Welcome!",
+    "question": "What do you want to name your new companion?",
+    "placeholder": "Tamagotchi name",
+    "emptyError": "Please enter a name for your Tamagotchi",
+    "create": "Create my Tamagotchi"
   }
 }

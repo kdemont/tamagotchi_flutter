@@ -8,7 +8,7 @@ class Tamagotchi {
   final int energy;
   final int happiness;
   final int cleanliness;
-  final int age; // creation date puis calculé ?
+  final DateTime creationDate;
   final DateTime lastUpdateTime;
   final VisualState state;
   final int poopCount; // Number of poops (max 3 visible)
@@ -22,7 +22,7 @@ class Tamagotchi {
     required this.energy,
     required this.happiness,
     required this.cleanliness,
-    required this.age,
+    required this.creationDate,
     required this.lastUpdateTime,
     required this.state,
     this.poopCount = 0,
@@ -37,7 +37,6 @@ class Tamagotchi {
     int? energy,
     int? happiness,
     int? cleanliness,
-    int? age,
     DateTime? lastUpdateTime,
     VisualState? state,
     int? poopCount,
@@ -51,7 +50,7 @@ class Tamagotchi {
       energy: energy ?? this.energy,
       happiness: happiness ?? this.happiness,
       cleanliness: cleanliness ?? this.cleanliness,
-      age: age ?? this.age,
+      creationDate: creationDate,
       lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
       state: state ?? this.state,
       poopCount: poopCount ?? this.poopCount,
@@ -62,12 +61,12 @@ class Tamagotchi {
   }
 
   factory Tamagotchi.initial() => Tamagotchi(
-    name: "Tama",
+    name: "",
     hunger: 100,
     energy: 100,
     happiness: 100,
     cleanliness: 100,
-    age: 0,
+    creationDate: DateTime.now(),
     lastUpdateTime: DateTime.now(),
     state: VisualState.idle,
     poopCount: 0,
@@ -76,6 +75,29 @@ class Tamagotchi {
     totalWalks: 0,
   );
 
+  /// Crée un nouveau tamagotchi avec le nom spécifié
+  factory Tamagotchi.newWithName(String name) => Tamagotchi(
+    name: name,
+    hunger: 100,
+    energy: 100,
+    happiness: 100,
+    cleanliness: 100,
+    creationDate: DateTime.now(),
+    lastUpdateTime: DateTime.now(),
+    state: VisualState.idle,
+    poopCount: 0,
+    lastStepCount: 0,
+    lastWalkDate: DateTime.now(),
+    totalWalks: 0,
+  );
+
+  /// Vérifie si le tamagotchi est mort (toutes les stats à 0)
+  bool get isDead =>
+      hunger <= 0 && energy <= 0 && happiness <= 0 && cleanliness <= 0;
+
+  int get age =>
+      lastUpdateTime.difference(creationDate).inMinutes;
+
   Map<String, dynamic> toJson() {
     return {
       'name': name,
@@ -83,7 +105,7 @@ class Tamagotchi {
       'energy': energy,
       'happiness': happiness,
       'cleanliness': cleanliness,
-      'age': age,
+      'creationDate': creationDate.toIso8601String(),
       'lastUpdateTime': lastUpdateTime.toIso8601String(),
       'state': state.toString().split('.').last,
       'poopCount': poopCount,
@@ -94,12 +116,14 @@ class Tamagotchi {
   }
 
   factory Tamagotchi.fromJson(Map<String, dynamic> json) => Tamagotchi(
-    name: json['name'] as String? ?? 'Tama',
+    name: json['name'] as String? ?? '',
     hunger: (json['hunger'] as num?)?.toInt() ?? 100,
     energy: (json['energy'] as num?)?.toInt() ?? 100,
     happiness: (json['happiness'] as num?)?.toInt() ?? 100,
     cleanliness: (json['cleanliness'] as num?)?.toInt() ?? 100,
-    age: (json['age'] as num?)?.toInt() ?? 0,
+    creationDate: json['creationDate'] != null
+        ? DateTime.parse(json['creationDate'] as String)
+        : DateTime.now(),
     lastUpdateTime: json['lastUpdateTime'] != null
         ? DateTime.parse(json['lastUpdateTime'] as String)
         : DateTime.now(),
