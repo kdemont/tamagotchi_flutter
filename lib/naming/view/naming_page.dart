@@ -126,7 +126,7 @@ class _NamingPageState extends State<NamingPage> {
                           vertical: 20,
                         ),
                       ),
-                      maxLength: 20,
+                      maxLength: 12,
                       textCapitalization: TextCapitalization.words,
                       onSubmitted: (_) => _createTamagotchi(),
                     ),
