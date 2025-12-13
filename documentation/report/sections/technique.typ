@@ -149,7 +149,7 @@ L'application exploite plusieurs capteurs du téléphone pour une expérience im
 
 - *Accéléromètre* (`sensors_plus`) : Détection des secousses pour éliminer les poux. Un algorithme de fenêtre temporelle compte les secousses dépassant un seuil configurable.
 - *Capteur de lumière* (`ambient_light`) : Détection de l'obscurité pour déclencher le sommeil automatique du Tamagotchi.
-- *Podomètre* ??? TODO
+- *Podomètre* (`pedometer`) : Suivi du nombre de pas effectués par l'utilisateur. Chaque tranche de 1000 pas complétée récompense le Tamagotchi avec un gain d'énergie (+10) et de bonheur (+15). Le but est de simuler une réelle promenade avec son compagnon virtuel.
 
 Des permissions utilisateur sont demandées au démarrage pour accéder aux capteurs nécessaires.
 

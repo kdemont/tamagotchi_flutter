@@ -91,7 +91,7 @@ Lucas est un adolescent curieux et connecté qui passe beaucoup de temps sur son
 *Références (alternatives actuelles)*
 - Roblox (pour l'aspect social et personnalisation)#footnote[@roblox]
 - Brawl Stars (jeux mobiles avec progression)#footnote[@brawl-stars]
-- My Talking Tom (compagnon virtuel moderne)#footnote[@my-talking-tom]
+- My Talking Tom (compagnon virtuel)#footnote[@my-talking-tom]
 - Duolingo (pour le système de streak et gamification)#footnote[@duolingo]
 
 == Scenario
