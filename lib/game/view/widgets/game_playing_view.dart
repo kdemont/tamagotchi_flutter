@@ -15,6 +15,13 @@ class GamePlayingView extends StatefulWidget {
 class _GamePlayingViewState extends State<GamePlayingView> {
   String _currentInput = '';
 
+  @override
+  void didUpdateWidget(GamePlayingView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Widget is updated when state changes, no specific action needed
+    // setState will be called automatically by the framework
+  }
+
   void _onNumberPressed(String number) {
     if (_currentInput.length < 3) {
       setState(() {
@@ -122,7 +129,12 @@ class _GamePlayingViewState extends State<GamePlayingView> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Icon(Icons.arrow_upward, size: 20), // TODO dynamic icon based on hint
+                          Icon(
+                            widget.state.isHigher == true
+                                ? Icons.arrow_upward
+                                : Icons.arrow_downward,
+                            size: 20,
+                          ),
                         ],
                       ),
                     )

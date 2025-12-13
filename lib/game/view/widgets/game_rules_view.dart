@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tamagotchi_flutter/gen/strings.g.dart';
 
+import '../../../home/bloc/home_bloc.dart';
 import '../../bloc/game_bloc.dart';
 
 class GameRulesView extends StatelessWidget {
@@ -9,6 +10,9 @@ class GameRulesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeState = context.watch<HomeBloc>().state;
+    final tamagotchiName = homeState is HomeLoaded ? homeState.tamagotchi.name : '';
+
     return Container(
       color: const Color(0xFFF5E6D3),
       child: SafeArea(
@@ -65,7 +69,7 @@ class GameRulesView extends StatelessWidget {
               const SizedBox(height: 40),
               // Title
               Text(
-                t.game.rules.title(name: 'Bobby'),
+                t.game.rules.title(name: tamagotchiName),
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -76,7 +80,7 @@ class GameRulesView extends StatelessWidget {
               const SizedBox(height: 24),
               // Description
               Text(
-                t.game.rules.description(name: 'Bobby'),
+                t.game.rules.description(name: tamagotchiName),
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,

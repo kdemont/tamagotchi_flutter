@@ -16,6 +16,7 @@ class GamePlaying extends GameState {
   final int attemptsRemaining;
   final int score;
   final String? hint;
+  final bool? isHigher; // true if should go higher, false if lower, null if no hint yet
   final List<int> previousGuesses;
 
   const GamePlaying({
@@ -23,6 +24,7 @@ class GamePlaying extends GameState {
     required this.attemptsRemaining,
     required this.score,
     this.hint,
+    this.isHigher,
     this.previousGuesses = const [],
   });
 
@@ -32,6 +34,7 @@ class GamePlaying extends GameState {
         attemptsRemaining,
         score,
         hint,
+        isHigher,
         previousGuesses,
       ];
 
@@ -40,6 +43,7 @@ class GamePlaying extends GameState {
     int? attemptsRemaining,
     int? score,
     String? hint,
+    bool? isHigher,
     List<int>? previousGuesses,
   }) {
     return GamePlaying(
@@ -47,6 +51,7 @@ class GamePlaying extends GameState {
       attemptsRemaining: attemptsRemaining ?? this.attemptsRemaining,
       score: score ?? this.score,
       hint: hint ?? this.hint,
+      isHigher: isHigher ?? this.isHigher,
       previousGuesses: previousGuesses ?? this.previousGuesses,
     );
   }

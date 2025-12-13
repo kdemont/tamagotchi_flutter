@@ -60,10 +60,13 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     } else {
       // Continue playing
       String hint;
+      bool isHigher;
       if (guess < currentState.targetNumber) {
         hint = t.game.hints.higher;
+        isHigher = true;
       } else {
         hint = t.game.hints.lower;
+        isHigher = false;
       }
 
       final newScore = currentState.score + 5; // Points for trying
@@ -73,6 +76,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
           attemptsRemaining: newAttempts,
           score: newScore,
           hint: hint,
+          isHigher: isHigher,
           previousGuesses: newPreviousGuesses,
         ),
       );

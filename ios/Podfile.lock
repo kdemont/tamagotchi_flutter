@@ -4,7 +4,7 @@ PODS:
   - device_info_plus (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - health (13.2.1):
+  - health (13.1.3):
     - Flutter
   - permission_handler_apple (9.3.0):
     - Flutter
@@ -43,7 +43,7 @@ SPEC CHECKSUMS:
   ambient_light: 4257c4811ce099c08f60ac036edd942d46fb2444
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  health: e310387222e199d4b3261337490a67aaff6d18eb
+  health: f496ad838f4bd227191f5bc05060b6f6138b44fd
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
   sensors_plus: 6a11ed0c2e1d0bd0b20b4029d3bad27d96e0c65b
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
