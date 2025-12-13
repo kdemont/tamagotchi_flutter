@@ -1,6 +1,6 @@
 = Technique
 
-Cette section décrit les choix techniques et l'architecture mise en place pour le développement de l'application Tamagotchi Flutter, un animal de compagnie virtuel interactif fonctionnant sur Android et iOS.
+Cette section décrit les choix techniques et l'architecture mise en place pour le développement de l'application.
 
 == Choix architecturaux
 
@@ -151,12 +151,11 @@ Les animations sont gérées via la librairie `lottie` avec un système de cache
 - Préchargement de l'animation idle au démarrage
 - Chargement paresseux des autres animations à la demande
 
-=== Machine à états visuels
+=== États visuels
 
 L'enum `VisualState` définit les différents états visuels avec un système de priorité configurable :
 - Chaque état possède une ou plusieurs animations (init + cycle)
 - Les états haute priorité (ex: `liceAttack`) peuvent interrompre les états basse priorité
-- Configuration centralisée dans `TamagotchiConfig`
 
 === Système de tick et décroissance
 
