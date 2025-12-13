@@ -20,6 +20,10 @@ Le fichier `home_bloc.dart` est actuellement très volumineux (plus de 700 ligne
 
 Le système d'achievements n'est pas encore implémenté mais son emplacement dans l'interface est déjà prévu. Ajouter des achievements permettrait d'augmenter l'engagement des utilisateurs en leur offrant des objectifs à atteindre. Les achievements pourraient récompenser des actions comme "Nourrir le Tamagotchi 10 fois" ou "Gagner 5 mini-jeux". Ils seraient affichés dans une section dédiée avec des icônes et des descriptions.
 
+=== Ajouts de nouveaux états
+
+Afin de rendre le Tamagotchi plus vivant et réaliste, de nouveaux états pourraient être ajoutés, tels que : heureux, triste, excité, affamé, etc. Chaque état pourrait avoir des animations qui lui sont propres seraient déclenchées en fonction de l'évolution des caractéristiques du Tamagotchi (par exemple, un Tamagotchi avec un niveau de bonheur élevé pourrait afficher une animation de danse). Certaines animations ont déjà été créées mais ne sont pas encore intégrées dans la logique actuelle.
+
 == Ajout de tests
 
 L'absence de tests unitaires pour la logique métier est une limitation actuelle. Ajouter des tests permettrait d'assurer la stabilité et la fiabilité de l'application lors de futures modifications. Les tests pourraient couvrir des aspects comme la gestion des statistiques du Tamagotchi, les événements automatiques et les interactions utilisateur.
