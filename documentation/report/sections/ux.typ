@@ -100,4 +100,7 @@ Nous avons défini un scénario simple pour illustrer comment un utilisateur pou
 _Lucas découvre PetSim et crée un lien avec son compagnon virtuel en interagissant avec lui au quotidien. Grâce à des actions simples et des mini-jeux, il influence directement l’évolution du compagnon. Les intéractions motivent Lucas à revenir régulièrement, tout en lui permettant de partager ses accomplissements avec ses amis._
 
 == Wireframes
-#lorem(30)
+=== Basses fidélités
+#image("../images/low-fidelity.jpg", height: 90%)
+=== Hautes fidélités
+#image("../images/high-fidelity.jpg", height: 90%)
