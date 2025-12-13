@@ -1,0 +1,11 @@
+tamagotchi-wiki:
+  type: Web
+  title: "Tamagotchi"
+  url: https://fr.wikipedia.org/wiki/Tamagotchi
+  date: 2025
+
+flutter-docs:
+  type: Web
+  title: "Flutter Documentation"
+  url: https://flutter.dev/docs
+  date: 2025

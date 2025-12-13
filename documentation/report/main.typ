@@ -5,6 +5,15 @@
   date: auto,
 )
 
+// Configuration des footnotes (doit être avant tout contenu)
+#show footnote.entry: set text(size: 9pt)
+
+// Chargement de la bibliographie
+#show: doc => {
+  set bibliography(title: "Bibliographie")
+  doc
+}
+
 // Mise en page
 #set page(
   paper: "a4",
@@ -50,6 +59,11 @@
 
 // En-têtes
 #set heading(numbering: "1.1")
+#show heading: it => {
+  it
+  v(0.3em)
+}
+#set footnote.entry(separator: line(length: 30%, stroke: 0.5pt))
 
 // Page de titre
 #align(center)[
@@ -94,6 +108,6 @@
 #pagebreak()
 #include "sections/technique.typ"
 #pagebreak()
-#include "sections/bibliographie.typ"
+#bibliography("references.yml", style: "apa")
 #pagebreak()
 #include "sections/annexes.typ"
