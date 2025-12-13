@@ -66,3 +66,8 @@ duolingo:
   author: "Duolingo, Inc."
   url: https://www.duolingo.com/
   date: 2011
+
+chatGPT:
+  type: Web
+  title: "chatGPT"
+  url: https://chat.openai.com/

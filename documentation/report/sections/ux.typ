@@ -97,7 +97,11 @@ Lucas est un adolescent curieux et connecté qui passe beaucoup de temps sur son
 == Scenario
 Nous avons défini un scénario simple pour illustrer comment un utilisateur pourrait interagir avec notre application Tamagotchi au cours d'une journée typique. Il s'agit ici de la découverte de l'application par Lucas.
 #image("../images/storyboard.jpg")
-_Lucas découvre PetSim et crée un lien avec son compagnon virtuel en interagissant avec lui au quotidien. Grâce à des actions simples et des mini-jeux, il influence directement l’évolution du compagnon. Les intéractions motivent Lucas à revenir régulièrement, tout en lui permettant de partager ses accomplissements avec ses amis._
+#text(size: 8pt)[
+_Visuel généré avec chatGPT_#footnote[@chatGPT]
+]
+
+_"Lucas découvre PetSim et crée un lien avec son compagnon virtuel en interagissant avec lui au quotidien. Grâce à des actions simples et des mini-jeux, il influence directement l’évolution du compagnon. Les intéractions motivent Lucas à revenir régulièrement, tout en lui permettant de partager ses accomplissements avec ses amis."_
 
 == Wireframes
 === Basses fidélités
