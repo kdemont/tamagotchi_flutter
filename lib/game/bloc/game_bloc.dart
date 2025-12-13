@@ -46,8 +46,12 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     if (guess == currentState.targetNumber) {
       // Win! Increase happiness
       final finalScore = currentState.score + (newAttempts * 10) + 100;
+      final attemptsUsed = maxAttempts - newAttempts;
       homeBloc.add(const Play());
-      emit(GameWon(finalScore: finalScore));
+      emit(GameWon(
+        finalScore: finalScore,
+        attemptsUsed: attemptsUsed,
+      ));
     } else if (newAttempts <= 0) {
       // Lost! The tamagotchi will naturally be sad as happiness decays
       // No specific action needed - the player's loss doesn't require an event

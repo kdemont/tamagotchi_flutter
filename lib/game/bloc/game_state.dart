@@ -59,11 +59,15 @@ class GamePlaying extends GameState {
 
 class GameWon extends GameState {
   final int finalScore;
+  final int attemptsUsed;
 
-  const GameWon({required this.finalScore});
+  const GameWon({
+    required this.finalScore,
+    required this.attemptsUsed,
+  });
 
   @override
-  List<Object?> get props => [finalScore];
+  List<Object?> get props => [finalScore, attemptsUsed];
 }
 
 class GameLost extends GameState {

@@ -78,7 +78,7 @@ class GameWonView extends StatelessWidget {
               // Description
               Text(
                 t.game.won.description(
-                  attempts: 10 - (state.finalScore - 100) ~/ 10,
+                  attempts: state.attemptsUsed,
                 ),
                 style: const TextStyle(
                   fontSize: 16,
