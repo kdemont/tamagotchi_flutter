@@ -78,3 +78,4 @@ Le document est à trouver dans le dossier de rendu du projet.
 
 == Liste des bugs connus
 - Le capteur de luminosité permettant de déclancher le sommeil du Tamagotchi a une sensibilité différente selon  les appareils. Nous avons testé sur nos deux appareils personnels (iOS et Android) et le seuil de luminosité pour déclancher le sommeil était drastiquement différent.
+- Le nombre de jours afficher à lors du game over n'est pas correct si le Tamagotchi meurt lorsque l'application est fermée.

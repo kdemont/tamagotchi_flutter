@@ -37,7 +37,109 @@ Le modèle `Tamagotchi` est conçu avec des propriétés `final` et une méthode
 
 == Logique du jeu
 
-TODO ajouter des screen et explqiuer les interactions
+Le Tamagotchi possède quatre statistiques principales qui évoluent au fil du temps et des interactions : la faim, l'énergie, le bonheur et l'hygiène. L'objectif du joueur est de maintenir ces statistiques à un niveau acceptable pour garder son compagnon virtuel en vie et heureux.
+
+=== Écran principal et statistiques
+
+#figure(
+  image("../images/idle.jpg", width: 40%),
+  caption: [Écran principal avec les quatre barres de statistiques et le Tamagotchi en état idle],
+)
+
+L'écran principal affiche les quatre statistiques sous forme de barres de progression colorées. Le Tamagotchi est animé au centre de l'écran et réagit visuellement à son état actuel.
+
+Le joueur peut interagir avec son Tamagotchi de plusieurs manières :
+
+==== Nourrir
+
+#figure(
+  image("../images/eating.jpg", width: 40%),
+  caption: [Animation de nourrissage du Tamagotchi],
+)
+
+En appuyant sur le bouton de nourriture (en orange avec un icône de couteau et cuillère), le joueur augmente la jauge de faim du Tamagotchi. Une animation de repas est jouée pendant l'action.
+
+==== Caresser
+
+#figure(
+  image("../images/touch.jpg", width: 40%),
+  caption: [Détection du toucher pour caresser le Tamagotchi],
+)
+
+Le joueur peut caresser son Tamagotchi en frottant l'écran directement sur l'animal. Cette interaction augmente légèrement le bonheur.
+
+==== Dormir
+
+#figure(
+  image("../images/sleeping.jpg", width: 40%),
+  caption: [Le Tamagotchi en train de dormir],
+)
+
+Le sommeil permet de récupérer de l'énergie. Le Tamagotchi peut s'endormir automatiquement lorsque le capteur de lumière détecte l'obscurité.
+
+==== Apparition de crottes
+
+#figure(
+  image("../images/poop.jpg", width: 40%),
+  caption: [Des crottes apparaissent à l'écran],
+)
+
+Des crottes apparaissent aléatoirement et affectent la propreté du Tamagotchi.
+
+==== Mode nettoyage
+
+#figure(
+  grid(
+    columns: 2,
+    gutter: 10pt,
+    image("../images/cleaning1.jpg", width: 100%),
+    image("../images/cleaning2.jpg", width: 100%),
+  ),
+  caption: [Processus de nettoyage : mode nettoyage et lavage du Tamagotchi],
+)
+
+Pour nettoyer les crottes, le joueur entre en mode nettoyage (bouton bleu avec un icône balai) puis frotte les zones sales pour les éliminer. Lorsque qu'il n'y a pas de crottes à l'écran, le bouton de nettoyage lance un animation ou le Tamagotchi se lave et regagne de l'hygiène.
+
+==== Attaque de poux
+
+#figure(
+  image("../images/lice.jpg", width: 40%),
+  caption: [Le Tamagotchi est attaqué par des poux],
+)
+
+Les poux peuvent attaquer aléatoirement le Tamagotchi. Pour les éliminer, le joueur doit secouer physiquement son téléphone (détection via l'accéléromètre). C'est un événement haute priorité qui interrompt les autres actions et est bloquant.
+
+==== Mort du Tamagotchi
+
+#figure(
+  image("../images/dead.jpg", width: 40%),
+  caption: [Écran de mort du Tamagotchi],
+)
+
+Si toutes les statistiques atteignent zéro, le Tamagotchi meurt. Le joueur peut alors recommencer avec un nouveau compagnon.
+
+=== Création du Tamagotchi
+
+#figure(
+  image("../images/naming.jpg", width: 40%),
+  caption: [Écran de création et nommage du Tamagotchi],
+)
+
+Au premier lancement ou lors de l'adoption d'un nouveau compagnon, le joueur peut donner un nom à son Tamagotchi.
+
+=== Mini-jeu
+
+#figure(
+  grid(
+    columns: 2,
+    gutter: 10pt,
+    image("../images/game_instructions.jpg", width: 100%),
+    image("../images/game.jpg", width: 100%),
+  ),
+  caption: [Mini-jeu de devinette de nombres : instructions et gameplay],
+)
+
+Un mini-jeu de devinette de nombres est accessible depuis la navigation en bas de l'écran. Le joueur doit deviner un nombre entre 1 et 100 en un nombre limité d'essais. Gagner augmente le bonheur du Tamagotchi.
 
 == Points clés
 
@@ -75,7 +177,10 @@ Un `Timer` périodique (1 seconde par défaut pour le développement) déclenche
 
 Les événements utilisateur (nourrir, jouer, dormir) et les événements automatiques (mort, poux) sont gérés avec des priorités pour éviter les conflits :
 
-TODO ajouter image priority.svg
+#figure(
+  image("../images/priority.svg", width: 80%),
+  caption: [Hiérarchie des priorités des états visuels du Tamagotchi],
+)
 
 Un événement peut prendre le contrôle uniquement si sa priorité est supérieure à l'événement en cours. Cela garantit une expérience utilisateur fluide et cohérente.
 
@@ -102,19 +207,37 @@ Nous allons maintenant détailler les principales technologies utilisées.
 
 === Lottie
 
-TODO
+Lottie est une bibliothèque open-source développée par Airbnb qui permet d'afficher des animations vectorielles légères et de haute qualité dans les applications mobiles et web à l'aide de fichiers JSON.
+
+Nous avons choisi Lottie pour intégrer les animations de notre Tamagotchi principalement car les animations Lottie sont plus légères que les GIFs ou vidéos, ce qui réduit la taille de l'application et améliore les performances.
+
+De plus, la bibliothèque Lottie pour Flutter offre une intégration simple et complète, facilitant l'ajout et la gestion des animations dans l'application.
+
+Elle a également une assez grande communauté et est bien maintenue, avec de nombreuses ressources disponibles en ligne.
 
 === Sensors Plus
 
-TODO
+Sensors Plus est une bibliothèque Flutter qui fournit une interface simple pour accéder aux capteurs matériels des appareils mobiles, tels que l'accéléromètre, le gyroscope, le magnétomètre, etc.
+
+Nous avons choisi Sensors Plus pour accéder à l'accéléromètre du téléphone afin de détecter les secousses effectuées par l'utilisateur pour éliminer les poux du Tamagotchi. 
+
+Cette bibliothèque est bien documentée, facile à utiliser et largement adoptée dans la communauté Flutter, ce qui garantit un bon support et une maintenance continue. De plus, elle bénéficie de la mention "Flutter Favorite" sur pub.dev, attestant de sa qualité et de sa fiabilité.
 
 === Ambient Light
 
-TODO
+La bibliothèque Ambient Light pour Flutter permet d'accéder au capteur de lumière ambiante des appareils mobiles.
+
+Nous avons choisi cette bibliothèque pour détecter les conditions de luminosité ambiante et ainsi déclencher le sommeil automatique du Tamagotchi lorsque l'environnement devient sombre.
+
+Cette bibliothque est la seule disponible (de ce que nous avons pu trouver) pour Flutter offrant cette fonctionnalité pour Android et iOS (la plupart ne le font que pour Android). Elle est également simple à intégrer et à utiliser, avec une documentation adéquate.
 
 === Slang
 
-TODO
+Slang est une bibliothèque Flutter dédiée à l'internationalisation (i18n) et à la localisation (l10n) des applications mobiles.
+
+Nous avons choisi Slang pour gérer l'internationalisation de notre application Tamagotchi Flutter, car elle offre une approche moderne et flexible pour la gestion des traductions et des ressources linguistiques. Slang permet de structurer facilement les fichiers de traduction (au format JSON), de gérer les pluriels et les formats spécifiques à chaque langue. De plus, elle est bien maintenue et dispose d'une communauté active, ce qui garantit un bon support et des mises à jour régulières.
+
+Sa facilité d'utilisation et son guide de démarrage clair en font un choix idéal pour intégrer l'internationalisation dans notre application.
 
 == Problèmes rencontrés
 
@@ -153,20 +276,3 @@ Une autre différence est le capteur de lumière ambiante, il n'existe pas sur i
 La mise en place du pattern BLoC a nécessité une courbe d'apprentissage, notamment pour structurer les événements et états de manière cohérente. La gestion de la logique métier dans un seul bloc (`HomeBloc`) a conduit à un fichier volumineux et difficile à maintenir.
 
 Avant cela nous avions envisagé et essayé de rajouter l'utilisation de classes services pour découper la logique métier, mais nous avons finalement préféré garder une architecture simple avec un seul BLoC principal.
-
-== Conclusion technique
-
-L'architecture choisie (BLoC + ???) offre une base solide et testable pour l'application. La séparation des responsabilités permet d'ajouter facilement de nouvelles fonctionnalités (achievements, mini-jeux) sans impacter le cœur de l'application. L'utilisation de capteurs natifs enrichit l'expérience utilisateur tout en présentant des défis d'intégration cross-platform qui ont été résolus par des abstractions appropriées.
-
-== Auto-critique
-
-*Points positifs :*
-- Architecture modulaire et extensible
-- Configuration centralisée facilitant les ajustements
-- Gestion efficace de la mémoire pour les animations
-
-*Axes d'amélioration :*
-- Le fichier `home_bloc.dart` (640+ lignes) mériterait d'être découpé en blocs plus spécialisés
-- L'absence de tests unitaires pour la logique métier
-- Le système d'achievements reste à implémenter complètement
-- La gestion des erreurs des capteurs pourrait être plus robuste avec des fallbacks utilisateur

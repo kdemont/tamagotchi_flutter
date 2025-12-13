@@ -108,6 +108,8 @@
 #pagebreak()
 #include "sections/technique.typ"
 #pagebreak()
+#include "sections/tests.typ"
+#pagebreak()
 #include "sections/futur_du_travail.typ"
 #pagebreak()
 #include "sections/conclusion.typ"
